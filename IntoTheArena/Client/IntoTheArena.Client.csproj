@@ -1,0 +1,35 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard2.1</TargetFramework>
+    <RazorLangVersion>3.0</RazorLangVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\dist\.eslintrc" />
+    <None Include="wwwroot\dist\.gitignore" />
+    <None Include="wwwroot\dist\CHANGELOG.md" />
+    <None Include="wwwroot\dist\dist\jquery.ddslick.min.js" />
+    <None Include="wwwroot\dist\gulpfile.js" />
+    <None Include="wwwroot\dist\jquery.ddslick.js" />
+    <None Include="wwwroot\dist\jquery.ddslick.min.js" />
+    <None Include="wwwroot\dist\LICENSE.md" />
+    <None Include="wwwroot\dist\README.md" />
+    <None Include="wwwroot\dist\src\jquery.ddslick.js" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Build" Version="3.2.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="3.2.0" PrivateAssets="all" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Authentication" Version="3.2.0" />
+    <PackageReference Include="Microsoft.AspNetCore.SignalR.Client" Version="3.1.5" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="3.1.5" />
+    <PackageReference Include="System.Net.Http.Json" Version="3.2.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Shared\IntoTheArena.Shared.csproj" />
+  </ItemGroup>
+
+</Project>
