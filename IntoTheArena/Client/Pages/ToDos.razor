@@ -1,4 +1,4 @@
-﻿@page "/todo"
+﻿@page "/todo/{info}"
 
 @inject IJSRuntime JSRuntime;
 @using IntoTheArena.Shared;
@@ -26,6 +26,8 @@
 
 @code
 {
+    [Parameter]
+    public string Info { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
