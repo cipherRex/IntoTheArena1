@@ -13,6 +13,10 @@
 @inject NavigationManager navigationManager
 @using System.Text.Json.Serialization;
 @using Microsoft.AspNetCore.Components.Web
+@using System.Dynamic
+@using Newtonsoft.Json
+@using Newtonsoft.Json.Linq
+@using Newtonsoft.Json.Converters
 
 <style type="text/css">
     .dd-selected, .dd-option, .dd-option-selected {
@@ -111,8 +115,8 @@
         <br />
         <div style="width:330px;" class="inner-div">
             @*<button id="enterButton" @onclick="@ExitLobby">
-                LEAVE LOBBY
-            </button>*@
+                    LEAVE LOBBY
+                </button>*@
         </div>
     </div>
 
@@ -264,9 +268,9 @@
             _chatClient.LobbyExited += LobbyExited;
             _chatClient.Challenged += Challenged;
 
-           // Console.WriteLine("Index:chat starting...");
+            // Console.WriteLine("Index:chat starting...");
             await _chatClient.StartAsync();
-           // Console.WriteLine("Index:chat starting?");
+            // Console.WriteLine("Index:chat starting?");
 
             //var response = await http.GetFromJsonAsync("Lobby/Combatants");
             //_contestants = response.Content.ReadFromJsonAsync<Fighter[]>().Result;
@@ -369,14 +373,20 @@
     {
         try
         {
-            Console.Write("Challenge()");
-            //await GetCurrentFighterIdFromDOM();
 
-            Fighter selectedFighter = _contestants.Where(x => x.id == fighterId).First();
+            Fighter challengedFighter = _contestants.Where(x => x.id == fighterId).First();
 
+            string serializedFighter = System.Text.Json.JsonSerializer.Serialize(challengedFighter);
+            ExpandoObject expandoObject = JsonConvert.DeserializeObject<ExpandoObject>(serializedFighter, new ExpandoObjectConverter());
+
+            var ChallengerFighterId = "ChallengerFighterId";
+            ((IDictionary<string, object>)expandoObject)[ChallengerFighterId] = _currentlySelectedFighterId;
+
+
+            serializedFighter = System.Text.Json.JsonSerializer.Serialize(expandoObject);
 
             var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
-            var response = await http.PostAsJsonAsync("Lobby/Challenge", System.Text.Json.JsonSerializer.Serialize(selectedFighter));
+            var response = await http.PostAsJsonAsync("Lobby/Challenge", serializedFighter);
 
         }
 

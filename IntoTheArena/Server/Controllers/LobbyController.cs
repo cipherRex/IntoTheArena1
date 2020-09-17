@@ -99,11 +99,18 @@ namespace IntoTheArena.Server.Controllers
             var _userEmail = userEmail().Result;
             Fighter challengedFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(FigherJson);
 
-            Fighter fx = _arena.Fighters().First(x => x.id == challengedFighter.id);
+            //dynamic foo = Newtonsoft.Json.JsonConvert.DeserializeObject(FigherJson);
+            //string myFighterId = foo.ChallengerFighterId;
 
-            await _chatHubContext.SendChallenge(_userEmail, challengedFighter.ownerId, "I CHALLENGE YOU AGAIN!!!!!");
+            //dynamic foo = Newtonsoft.Json.JsonConvert.DeserializeObject(FigherJson);
+            string myFighterId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(FigherJson).ChallengerFighterId;
+
+            Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
+
+            await _chatHubContext.SendChallenge(_userEmail, challengedFighter.ownerId, System.Text.Json.JsonSerializer.Serialize(myFighter));
 
         }
+
 
         //[HttpPost("ExitLobby")]
         //public async Task<IEnumerable<ContestantInfo>> ExitLobby()
