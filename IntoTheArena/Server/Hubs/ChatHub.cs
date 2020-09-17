@@ -10,42 +10,36 @@ namespace IntoTheArena.Server.Hubs
     public class ChatHub : Hub
     {
 
-        private static readonly Dictionary<string, string> userLookup = new Dictionary<string, string>();
+        private static readonly Dictionary<string, string> _userLookup = new Dictionary<string, string>();
 
+        private List<string>  allConnetionIdsBut(string recipientID) 
+        { 
+            return _userLookup.Where(x => x.Value != recipientID)
+                     .Select(x => x.Key)
+                     .ToList();
+        }
 
-        public async Task SendMessage(string user, string message)
+        public async Task SendChallenge(string user, string recipient,string message)
         {
 
-            bool kludge = false;
+            //var playersToExclude = _userLookup.Where(x => x.Value != recipient)
+            //     .Select(x => x.Key)
+            //     .ToList();
 
-            string fooId = "";
-            if (kludge)
-            {
-                fooId = "";
-                await Clients.Users(fooId).SendAsync(Messages.RECIEVE, user, message);
-                //await Clients.Clients(fooId).SendAsync(Messages.RECIEVE, user, message);
-                //await Clients.Users(fooId).SendAsync(Messages.RECIEVE, message);
+            //await Clients.AllExcept(playersToExclude).SendAsync(Messages.CHALLENGE, user, message);
+            await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
 
-            }
-            else
-            {
-                await Clients.Users("cipherRex@gmail.com").SendAsync(Messages.RECIEVE, message);
-                //await Clients.All.SendAsync(Messages.RECIEVE, user, message);
-
-            }
-
-
-            //await Clients.All.SendAsync(Messages.RECIEVE, user, message);
-            //await Clients.Users(fooId).SendAsync(Messages.RECIEVE, user, message);
 
         }
 
         public async Task Register(string username)
         {
+            
+
             var currentId = Context.ConnectionId;
-            if (!userLookup.ContainsKey(currentId))
+            if (!_userLookup.ContainsKey(currentId))
             {
-                userLookup.Add(currentId, username);
+                _userLookup.Add(currentId, username);
                 await Clients.AllExcept(currentId).SendAsync(
                         Messages.RECIEVE,
                         username, $"{username} joined the chat"
@@ -55,7 +49,7 @@ namespace IntoTheArena.Server.Hubs
 
         public override Task OnConnectedAsync()
         {
-
+            
             Console.WriteLine("Connected");
             return base.OnConnectedAsync();
         }

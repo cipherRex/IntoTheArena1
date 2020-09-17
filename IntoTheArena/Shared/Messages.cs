@@ -15,6 +15,7 @@ namespace IntoTheArena.Shared
             public static string ENTER_LOBBY = "EnterLobby";
             public static string LEAVE_LOBBY = "LeaveLobby";
 
+            public static string CHALLENGE = "Challenge";
 
     }
 }

@@ -12,14 +12,14 @@ namespace IntoTheArena.Shared
 
         public Arena() 
         {
-            _fighters.Add(new Fighter() {id = Guid.NewGuid().ToString(), Picture = "fig4.png", Name="Grok" });
-            _fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig1.png", Name = "Otik" });
+            //_fighters.Add(new Fighter() {id = Guid.NewGuid().ToString(), Picture = "fig4.png", Name="Grok" });
+            //_fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig1.png", Name = "Otik" });
 
-            _fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig2.png", Name = "Juan" });
-            _fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig3.png", Name = "Norge" });
+            //_fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig2.png", Name = "Juan" });
+            //_fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig3.png", Name = "Norge" });
 
-            _fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig4.png", Name = "Randy" });
-            _fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig1.png", Name = "Ootpik" });
+            //_fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig4.png", Name = "Randy" });
+            //_fighters.Add(new Fighter() { id = Guid.NewGuid().ToString(), Picture = "fig1.png", Name = "Ootpik" });
 
 
         }

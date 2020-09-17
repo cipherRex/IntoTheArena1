@@ -35,7 +35,7 @@ namespace IntoTheArena.Server.Controllers
             _chatHubContext = chatHubContext;
             _arena = arena;
             _userManager = userManager;
-            // _chatHub = chatHub;
+            //_chatHub = chatHub;
         }
 
         [AllowAnonymous]
@@ -70,9 +70,11 @@ namespace IntoTheArena.Server.Controllers
         [HttpPost("EnterLobby")]
         public async Task EnterLobby([FromBody] string FigherJson)
         {
+
+  
             var _userEmail = userEmail().Result;
             Fighter newFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(FigherJson);
-
+            newFighter.ownerEmail = _userEmail;
             _arena.AddFighter(newFighter);
             await _chatHubContext.Clients.All.SendAsync(Messages.ENTER_LOBBY, _userEmail, JsonSerializer.Serialize(newFighter));
 
@@ -88,6 +90,18 @@ namespace IntoTheArena.Server.Controllers
 
             _arena.RemoveFighter(fx);
             await _chatHubContext.Clients.All.SendAsync(Messages.LEAVE_LOBBY, _userEmail, JsonSerializer.Serialize(fighterToRemove));
+
+        }
+
+        [HttpPost("Challenge")]
+        public async Task Challenge([FromBody] string FigherJson)
+        {
+            var _userEmail = userEmail().Result;
+            Fighter challengedFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(FigherJson);
+
+            Fighter fx = _arena.Fighters().First(x => x.id == challengedFighter.id);
+
+            await _chatHubContext.SendChallenge(_userEmail, challengedFighter.ownerId, "I CHALLENGE YOU AGAIN!!!!!");
 
         }
 

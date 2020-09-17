@@ -12,6 +12,7 @@
 @using IntoTheArena.Client.Data
 @inject NavigationManager navigationManager
 @using System.Text.Json.Serialization;
+@using Microsoft.AspNetCore.Components.Web
 
 <style type="text/css">
     .dd-selected, .dd-option, .dd-option-selected {
@@ -31,7 +32,6 @@
         left: 60%;
         width: 17%;
         height: 80%;
-
     }
 
     .dd-selected-image {
@@ -110,9 +110,9 @@
         </div>
         <br />
         <div style="width:330px;" class="inner-div">
-            <button id="enterButton" @onclick="@ExitLobby">
-               LEAVE LOBBY
-            </button>
+            @*<button id="enterButton" @onclick="@ExitLobby">
+                LEAVE LOBBY
+            </button>*@
         </div>
     </div>
 
@@ -142,7 +142,19 @@
                                         <h4><span style="font-weight:bold;">@fighter.Name</span></h4>
 
                                         <div style="position: absolute; top:45%; left: 5%;width:20%;height:80%">
-                                            <button class="btn btn-danger btn-sm">Challenge</button>
+                                            @*<button class="btn btn-danger btn-sm" @onclick="@Challenge">Challenge</button>*@
+                                            @if (fighter.id != _currentlySelectedFighterId)
+                                            {
+                                                <button class="btn btn-danger btn-sm" @onclick="@(async ()=> await Challenge(fighter.id))">Challenge  </button>
+                                            }
+                                            else
+                                            {
+                                                <button id="enterButton" @onclick="@ExitLobby">
+                                                    LEAVE LOBBY
+                                                </button>
+
+                                            }
+
                                         </div>
                                     </div>
 
@@ -185,6 +197,8 @@
     List<Message> messages = new List<Message>();
 
     ChatClient _chatClient = null;
+
+    string _chatClientId;
 
     public void addFighter()
     {
@@ -244,12 +258,15 @@
 
             _contestants = await http.GetFromJsonAsync<List<Fighter>>("Lobby/Combatants");
 
-            _chatClient = new ChatClient("username", navigationManager);
+            _chatClientId = Guid.NewGuid().ToString();
+            _chatClient = new ChatClient(_chatClientId, navigationManager);
             _chatClient.MessageReceived += MessageReceived;
             _chatClient.LobbyExited += LobbyExited;
-            Console.WriteLine("Index:chat starting...");
+            _chatClient.Challenged += Challenged;
+
+           // Console.WriteLine("Index:chat starting...");
             await _chatClient.StartAsync();
-            Console.WriteLine("Index:chat starting?");
+           // Console.WriteLine("Index:chat starting?");
 
             //var response = await http.GetFromJsonAsync("Lobby/Combatants");
             //_contestants = response.Content.ReadFromJsonAsync<Fighter[]>().Result;
@@ -294,6 +311,14 @@
 
     }
 
+
+    void Challenged(object sender, ChallengedEventArgs e)
+    {
+        Console.WriteLine(e.MessageContent);
+        StateHasChanged();
+
+    }
+
     async Task EnterLobby()
     {
         try
@@ -302,6 +327,7 @@
             await GetCurrentFighterIdFromDOM();
 
             Fighter selectedFighter = _playerFighters.Where(x => x.id == _currentlySelectedFighterId).First();
+            selectedFighter.ownerId = _chatClientId;
 
 
             var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
@@ -328,6 +354,29 @@
 
             var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
             var response = await http.PostAsJsonAsync("Lobby/ExitLobby", System.Text.Json.JsonSerializer.Serialize(selectedFighter));
+
+        }
+
+        catch (Exception e)
+        {
+            message = $"ERROR: Failed to start EnterLobby {e.Message}";
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+        }
+    }
+
+    async Task Challenge(string fighterId)
+    {
+        try
+        {
+            Console.Write("Challenge()");
+            //await GetCurrentFighterIdFromDOM();
+
+            Fighter selectedFighter = _contestants.Where(x => x.id == fighterId).First();
+
+
+            var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
+            var response = await http.PostAsJsonAsync("Lobby/Challenge", System.Text.Json.JsonSerializer.Serialize(selectedFighter));
 
         }
 

@@ -43,6 +43,11 @@ namespace IntoTheArena.Client.Data
                     HandleLobbyExitedMessage(_username, message);
                 });
 
+                _hubConnection.On<string, string>(Messages.CHALLENGE, (user, message) =>
+                {
+                    HandleChallenge(_username, message);
+                });
+
                 await _hubConnection.StartAsync();
 
                 //Console.WriteLine("ChatClient:calling Start Returned");
@@ -67,6 +72,13 @@ namespace IntoTheArena.Client.Data
         }
         public event LobbyExitedEventHandler LobbyExited;
         public delegate void LobbyExitedEventHandler(object sender, LobbyExitedEventArgs e);
+
+        private void HandleChallenge(string username, string message)
+        {
+            Challenged?.Invoke(this, new ChallengedEventArgs(username, message));
+        }
+        public event ChallengedEventHandler Challenged;
+        public delegate void ChallengedEventHandler(object sender, ChallengedEventArgs e);
 
         public async Task SendAsync(string message)
         {
@@ -135,4 +147,18 @@ namespace IntoTheArena.Client.Data
         }
 
     }
+
+    public class ChallengedEventArgs : EventArgs
+    {
+        public string MessageType { get; set; }
+        public string MessageContent { get; set; }
+
+        public ChallengedEventArgs(string messageType, string messageContent)
+        {
+            MessageType = messageType;
+            MessageContent = messageContent;
+        }
+
+    }
+
 }
