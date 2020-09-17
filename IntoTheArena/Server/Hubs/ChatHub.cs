@@ -33,19 +33,33 @@ namespace IntoTheArena.Server.Hubs
             await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
         }
 
-        public async Task AcceptChallenge(string user, string Player1Id, string Player2Id, string Fighter1Id, string Fighter2Id)
+        public async Task AcceptChallenge(string CombatSessionId,string user, string Player1Id, string Player2Id, string Fighter1Id, string Fighter2Id)
         {
-            List<string> list = new List<string>();
-            list.Add(Player1Id);
-            list.Add(Player2Id);
+            //List<string> list = new List<string>();
+            //list.Add(Player1Id);
+            //list.Add(Player2Id);
 
-            Dictionary<string, string> message = new Dictionary<string, string>();
-            message["Player1Id"] = Player1Id;
-            message["Fighter1Id"] = Fighter1Id;
-            message["Player2Id"] = Player2Id;
-            message["Fighter2Id"] = Fighter2Id;
+            //Dictionary<string, string> message = new Dictionary<string, string>();
+            //message["Player1Id"] = Player1Id;
+            //message["Fighter1Id"] = Fighter1Id;
+            //message["Player2Id"] = Player2Id;
+            //message["Fighter2Id"] = Fighter2Id;
 
-            await Clients.AllExcept(allConnetionIdsBut(list)).SendAsync(Messages.ACCEPT_CHALLENGE, user,System.Text.Json.JsonSerializer.Serialize(message));
+            //await Clients.AllExcept(allConnetionIdsBut(list)).SendAsync(Messages.ACCEPT_CHALLENGE, user,System.Text.Json.JsonSerializer.Serialize(message));
+
+            Dictionary<string, string> message1 = new Dictionary<string, string>();
+            message1["SessionId"] = CombatSessionId;
+            message1["FighterId"] = Fighter1Id;
+            message1["Role"] = "White";
+
+            Dictionary<string, string> message2 = new Dictionary<string, string>();
+            message2["SessionId"] = CombatSessionId;
+            message2["FighterId"] = Fighter2Id;
+            message2["Role"] = "Black";
+
+            await Clients.AllExcept(allConnetionIdsBut(Player1Id)).SendAsync(Messages.ACCEPT_CHALLENGE, user, System.Text.Json.JsonSerializer.Serialize(message1));
+            await Clients.AllExcept(allConnetionIdsBut(Player2Id)).SendAsync(Messages.ACCEPT_CHALLENGE, user, System.Text.Json.JsonSerializer.Serialize(message2));
+
         }
 
         public async Task Register(string username)

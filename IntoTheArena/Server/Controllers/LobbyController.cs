@@ -6,6 +6,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using IntoTheArena.Server.Models;
 using IntoTheArena.Shared;
+using IntoTheArena.Shared.CombatManagement;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -23,18 +24,19 @@ namespace IntoTheArena.Server.Controllers
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly Arena _arena;
         Hubs.ChatHub _chatHubContext;
-
+        private readonly IntoTheArena.Shared.CombatManagement.CombatManager _combatManager;
         //Hubs.ChatHub _chatHubContext;
 
 
 
         //public LobbyController(UserManager<ApplicationUser> userManager, Arena arena, Hubs.ChatHub chatHubContext)
-        public LobbyController(UserManager<ApplicationUser> userManager, Arena arena, Hubs.ChatHub chatHubContext)
+        public LobbyController(UserManager<ApplicationUser> userManager, Arena arena, Hubs.ChatHub chatHubContext, IntoTheArena.Shared.CombatManagement.CombatManager combatManager)
         {
             
             _chatHubContext = chatHubContext;
             _arena = arena;
             _userManager = userManager;
+            _combatManager = combatManager;
             //_chatHub = chatHub;
         }
 
@@ -117,7 +119,10 @@ namespace IntoTheArena.Server.Controllers
 
             Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
 
-            await _chatHubContext.AcceptChallenge(_userEmail, myFighter.ownerId, challengedFighter.ownerId, myFighter.id, challengedFighter.id);
+            //CombatSession newCombatSession = new CombatSession(challengedFighter.ownerId, challengedFighter.id);
+            string sessionId = _combatManager.AddCombatSession(new CombatSession(challengedFighter.ownerId, challengedFighter.id));
+
+            await _chatHubContext.AcceptChallenge(sessionId, _userEmail, myFighter.ownerId, challengedFighter.ownerId, myFighter.id, challengedFighter.id);
 
         }
 

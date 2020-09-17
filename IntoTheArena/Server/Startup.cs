@@ -67,7 +67,7 @@ namespace IntoTheArena.Server
             services.AddSingleton<IntoTheArena.Shared.Arena>();
             services.AddSingleton<IntoTheArena.Server.Hubs.ChatHub>();
 
-            //services.AddSingleton<IntoTheArena.Shared.CombatManagement.CombatManager>().regis;
+            services.AddSingleton<IntoTheArena.Shared.CombatManagement.CombatManager>();
 
         }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace IntoTheArena.Shared.CombatManagement
 {
-    class CombatSession
+    public class CombatSession
     {
         private List<CombatRound> _history = new List<CombatRound>();
         private string _player1Id = "";
