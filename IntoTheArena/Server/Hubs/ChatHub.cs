@@ -19,17 +19,27 @@ namespace IntoTheArena.Server.Hubs
                      .ToList();
         }
 
-        public async Task SendChallenge(string user, string recipient,string message)
+        private List<string> allConnetionIdsBut(List<string> recipientIDs)
         {
 
-            //var playersToExclude = _userLookup.Where(x => x.Value != recipient)
-            //     .Select(x => x.Key)
-            //     .ToList();
+            return _userLookup.Where(x => recipientIDs.All(p2 => p2 != x.Value))
+                     .Select(x => x.Key)
+                     .ToList();
 
-            //await Clients.AllExcept(playersToExclude).SendAsync(Messages.CHALLENGE, user, message);
+        }
+
+        public async Task SendChallenge(string user, string recipient,string message)
+        {
             await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
+        }
 
+        public async Task AcceptChallenge(string ChallengerId, string ChallengeeId)
+        {
+            List<string> list = new List<string>();
+            list.Add(ChallengerId);
+            list.Add(ChallengeeId);
 
+            await Clients.AllExcept(allConnetionIdsBut(list)).SendAsync(Messages.ACCEPT_CHALLENGE);
         }
 
         public async Task Register(string username)

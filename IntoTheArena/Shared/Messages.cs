@@ -16,6 +16,6 @@ namespace IntoTheArena.Shared
             public static string LEAVE_LOBBY = "LeaveLobby";
 
             public static string CHALLENGE = "Challenge";
-
+            public static string ACCEPT_CHALLENGE = "Challenge";
     }
 }

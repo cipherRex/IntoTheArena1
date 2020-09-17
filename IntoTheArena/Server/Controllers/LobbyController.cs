@@ -107,6 +107,20 @@ namespace IntoTheArena.Server.Controllers
 
         }
 
+        [HttpPost("AcceptChallenge")]
+        public async Task AcceptChallenge([FromBody] string FigherJson)
+        {
+            var _userEmail = userEmail().Result;
+            Fighter challengedFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(FigherJson);
+
+            string myFighterId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(FigherJson).ChallengerFighterId;
+
+            Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
+
+            await _chatHubContext.AcceptChallenge(myFighter.ownerId, challengedFighter.ownerId);
+
+        }
+
 
         //[HttpPost("ExitLobby")]
         //public async Task<IEnumerable<ContestantInfo>> ExitLobby()

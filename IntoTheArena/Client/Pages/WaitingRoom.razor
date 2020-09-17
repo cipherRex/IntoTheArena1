@@ -149,7 +149,7 @@
                                             @*<button class="btn btn-danger btn-sm" @onclick="@Challenge">Challenge</button>*@
                                             @if (_challengerIDs.Contains(fighter.id))
                                             {
-                                                <button class="btn btn-danger btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Accept Challenge  </button>
+                                                <button class="btn btn-danger btn-sm" @onclick="@(async () => await AcceptChallenge(fighter.id))">Accept Challenge  </button>
                                             }
 
                                             else if (_challengeeIDs.Contains(fighter.id))
@@ -409,6 +409,37 @@
 
             _challengeeIDs.Add(challengedFighter.id);
             StateHasChanged();
+        }
+
+        catch (Exception e)
+        {
+            message = $"ERROR: Failed to start EnterLobby {e.Message}";
+            Console.WriteLine(e.Message);
+            Console.WriteLine(e.StackTrace);
+        }
+    }
+
+    async Task AcceptChallenge(string fighterId)
+    {
+        try
+        {
+
+            Fighter challengingFighter = _contestants.Where(x => x.id == fighterId).First();
+
+            string serializedFighter = System.Text.Json.JsonSerializer.Serialize(challengingFighter);
+            ExpandoObject expandoObject = JsonConvert.DeserializeObject<ExpandoObject>(serializedFighter, new ExpandoObjectConverter());
+
+            var challengingFighterId = "ChallengerFighterId";
+            ((IDictionary<string, object>)expandoObject)[challengingFighterId] = _currentlySelectedFighterId;
+
+
+            serializedFighter = System.Text.Json.JsonSerializer.Serialize(expandoObject);
+
+            var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
+            var response = await http.PostAsJsonAsync("Lobby/AcceptChallenge", serializedFighter);
+
+            //_challengeeIDs.Add(challengingFighter.id);
+            //StateHasChanged();
         }
 
         catch (Exception e)
