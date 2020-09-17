@@ -48,6 +48,11 @@ namespace IntoTheArena.Client.Data
                     HandleChallenge(_username, message);
                 });
 
+                _hubConnection.On<string, string>(Messages.ACCEPT_CHALLENGE, (user, message) =>
+                {
+                    HandleChallengeAccepted(_username, message);
+                });
+
                 await _hubConnection.StartAsync();
 
                 //Console.WriteLine("ChatClient:calling Start Returned");
@@ -79,6 +84,13 @@ namespace IntoTheArena.Client.Data
         }
         public event ChallengedEventHandler Challenged;
         public delegate void ChallengedEventHandler(object sender, ChallengedEventArgs e);
+
+        private void HandleChallengeAccepted(string username, string message)
+        {
+            ChallengeAccepted?.Invoke(this, new ChallengeAcceptedEventArgs(username, message));
+        }
+        public event ChallengeAcceptedEventHandler ChallengeAccepted;
+        public delegate void ChallengeAcceptedEventHandler(object sender, ChallengeAcceptedEventArgs e);
 
         public async Task SendAsync(string message)
         {
@@ -161,4 +173,16 @@ namespace IntoTheArena.Client.Data
 
     }
 
+    public class ChallengeAcceptedEventArgs : EventArgs
+    {
+        public string MessageType { get; set; }
+        public string MessageContent { get; set; }
+
+        public ChallengeAcceptedEventArgs(string messageType, string messageContent)
+        {
+            MessageType = messageType;
+            MessageContent = messageContent;
+        }
+
+    }
 }

@@ -33,13 +33,19 @@ namespace IntoTheArena.Server.Hubs
             await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
         }
 
-        public async Task AcceptChallenge(string ChallengerId, string ChallengeeId)
+        public async Task AcceptChallenge(string user, string Player1Id, string Player2Id, string Fighter1Id, string Fighter2Id)
         {
             List<string> list = new List<string>();
-            list.Add(ChallengerId);
-            list.Add(ChallengeeId);
+            list.Add(Player1Id);
+            list.Add(Player2Id);
 
-            await Clients.AllExcept(allConnetionIdsBut(list)).SendAsync(Messages.ACCEPT_CHALLENGE);
+            Dictionary<string, string> message = new Dictionary<string, string>();
+            message["Player1Id"] = Player1Id;
+            message["Fighter1Id"] = Fighter1Id;
+            message["Player2Id"] = Player2Id;
+            message["Fighter2Id"] = Fighter2Id;
+
+            await Clients.AllExcept(allConnetionIdsBut(list)).SendAsync(Messages.ACCEPT_CHALLENGE, user,System.Text.Json.JsonSerializer.Serialize(message));
         }
 
         public async Task Register(string username)

@@ -281,6 +281,7 @@
             _chatClient.MessageReceived += MessageReceived;
             _chatClient.LobbyExited += LobbyExited;
             _chatClient.Challenged += Challenged;
+            _chatClient.ChallengeAccepted += ChallengeAccepted;
 
             // Console.WriteLine("Index:chat starting...");
             await _chatClient.StartAsync();
@@ -339,6 +340,12 @@
         Fighter challengingFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(e.MessageContent);
         _challengerIDs.Add(challengingFighter.id);
         StateHasChanged();
+
+    }
+
+    void ChallengeAccepted(object sender, ChallengeAcceptedEventArgs e)
+    {
+        Console.WriteLine("BEGIN FIGHT! ", e.MessageContent);
 
     }
 

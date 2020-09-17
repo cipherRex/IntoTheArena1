@@ -117,7 +117,7 @@ namespace IntoTheArena.Server.Controllers
 
             Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
 
-            await _chatHubContext.AcceptChallenge(myFighter.ownerId, challengedFighter.ownerId);
+            await _chatHubContext.AcceptChallenge(_userEmail, myFighter.ownerId, challengedFighter.ownerId, myFighter.id, challengedFighter.id);
 
         }
 
