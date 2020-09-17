@@ -17,6 +17,7 @@
 @using Newtonsoft.Json
 @using Newtonsoft.Json.Linq
 @using Newtonsoft.Json.Converters
+@inject NavigationManager NavigationManager
 
 <style type="text/css">
     .dd-selected, .dd-option, .dd-option-selected {
@@ -215,7 +216,7 @@
     string _chatClientId;
 
     List<string> _challengerIDs = new List<string>();   //fighters that have challenged me
-    List<string> _challengeeIDs = new List<string>();   //fighters that i have challenged 
+    List<string> _challengeeIDs = new List<string>();   //fighters that i have challenged
 
 
     public void addFighter()
@@ -345,7 +346,8 @@
 
     void ChallengeAccepted(object sender, ChallengeAcceptedEventArgs e)
     {
-        Console.WriteLine("BEGIN FIGHT! ", e.MessageContent);
+        Console.WriteLine("", "BEGIN FIGHT! ", e.MessageContent);
+        NavigationManager.NavigateTo("todo");
 
     }
 
