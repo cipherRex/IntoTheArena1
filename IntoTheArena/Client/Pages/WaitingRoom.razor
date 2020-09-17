@@ -148,23 +148,29 @@
                                         <div style="position: absolute; top:45%; left: 5%;width:20%;height:80%">
                                             @*<button class="btn btn-danger btn-sm" @onclick="@Challenge">Challenge</button>*@
                                             @if (_challengerIDs.Contains(fighter.id))
-                                                {
-                                                    <button class="btn btn-danger btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Accept Challenge  </button>
-                                                }
+                                            {
+                                                <button class="btn btn-danger btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Accept Challenge  </button>
+                                            }
 
-                                                else if (fighter.id != _currentlySelectedFighterId)
-                                                {
-                                                    <button class="btn btn-success btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Challenge  </button>
-                                                }
+                                            else if (_challengeeIDs.Contains(fighter.id))
+                                            {
+                                                <span>
+                                                    Already Challenged
+                                                </span>
+                                            }
 
+                                            else if (fighter.id != _currentlySelectedFighterId)
+                                            {
+                                                <button class="btn btn-success btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Challenge  </button>
+                                            }
 
-                                                else
-                                                {
-                                                    <button id="enterButton" @onclick="@ExitLobby">
-                                                        LEAVE LOBBY
-                                                    </button>
-                                                }
-                                                
+                                            else
+                                            {
+                                                <button id="enterButton" @onclick="@ExitLobby">
+                                                    LEAVE LOBBY
+                                                </button>
+                                            }
+
                                         </div>
                                     </div>
 
@@ -319,6 +325,9 @@
 
         Fighter fighterToRemove = System.Text.Json.JsonSerializer.Deserialize<Fighter>(e.MessageContent);
         _contestants.RemoveAll(x => x.id == fighterToRemove.id);
+        _challengeeIDs.Remove(fighterToRemove.id);
+        _challengerIDs.Remove(fighterToRemove.id);
+
         StateHasChanged();
 
     }
@@ -398,6 +407,8 @@
             var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
             var response = await http.PostAsJsonAsync("Lobby/Challenge", serializedFighter);
 
+            _challengeeIDs.Add(challengedFighter.id);
+            StateHasChanged();
         }
 
         catch (Exception e)
