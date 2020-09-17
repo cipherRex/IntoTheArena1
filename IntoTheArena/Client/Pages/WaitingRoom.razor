@@ -147,18 +147,24 @@
 
                                         <div style="position: absolute; top:45%; left: 5%;width:20%;height:80%">
                                             @*<button class="btn btn-danger btn-sm" @onclick="@Challenge">Challenge</button>*@
-                                            @if (fighter.id != _currentlySelectedFighterId)
-                                            {
-                                                <button class="btn btn-danger btn-sm" @onclick="@(async ()=> await Challenge(fighter.id))">Challenge  </button>
-                                            }
-                                            else
-                                            {
-                                                <button id="enterButton" @onclick="@ExitLobby">
-                                                    LEAVE LOBBY
-                                                </button>
+                                            @if (_challengerIDs.Contains(fighter.id))
+                                                {
+                                                    <button class="btn btn-danger btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Accept Challenge  </button>
+                                                }
 
-                                            }
+                                                else if (fighter.id != _currentlySelectedFighterId)
+                                                {
+                                                    <button class="btn btn-success btn-sm" @onclick="@(async () => await Challenge(fighter.id))">Challenge  </button>
+                                                }
 
+
+                                                else
+                                                {
+                                                    <button id="enterButton" @onclick="@ExitLobby">
+                                                        LEAVE LOBBY
+                                                    </button>
+                                                }
+                                                
                                         </div>
                                     </div>
 
@@ -193,8 +199,6 @@
     public string GLOBAL_FOO = "FOO";
 
     public string _currentlySelectedFighterId = "";
-    //private Fighter[] _contestants;
-    //private IList<Fighter> _contestants;
     private List<Fighter> _contestants = new List<Fighter>();
     private Fighter[] _playerFighters;
     string message = null;
@@ -203,6 +207,8 @@
     ChatClient _chatClient = null;
 
     string _chatClientId;
+
+    List<string> _challengerIDs = new List<string>();
 
     public void addFighter()
     {
@@ -319,6 +325,8 @@
     void Challenged(object sender, ChallengedEventArgs e)
     {
         Console.WriteLine(e.MessageContent);
+        Fighter challengingFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(e.MessageContent);
+        _challengerIDs.Add(challengingFighter.id);
         StateHasChanged();
 
     }

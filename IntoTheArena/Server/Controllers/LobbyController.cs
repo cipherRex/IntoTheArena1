@@ -99,10 +99,6 @@ namespace IntoTheArena.Server.Controllers
             var _userEmail = userEmail().Result;
             Fighter challengedFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(FigherJson);
 
-            //dynamic foo = Newtonsoft.Json.JsonConvert.DeserializeObject(FigherJson);
-            //string myFighterId = foo.ChallengerFighterId;
-
-            //dynamic foo = Newtonsoft.Json.JsonConvert.DeserializeObject(FigherJson);
             string myFighterId = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(FigherJson).ChallengerFighterId;
 
             Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
