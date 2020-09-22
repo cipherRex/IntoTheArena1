@@ -31,7 +31,7 @@ namespace IntoTheArena.Client.Data
                     .WithUrl(_navigationManager.ToAbsoluteUri(HUBURL))
                     .Build();
 
-                Console.WriteLine("ChatClient:calling Start()");
+              //  Console.WriteLine("ChatClient:calling Start()");
 
                 _hubConnection.On<string, string>(Messages.ENTER_LOBBY, (user, message) =>
                 {
@@ -115,7 +115,7 @@ namespace IntoTheArena.Client.Data
 
         public async ValueTask DisposeAsync()
         {
-            Console.WriteLine("ChatClient:Disposing");
+         //   Console.WriteLine("ChatClient:Disposing");
             await StopAsync();
         }
 

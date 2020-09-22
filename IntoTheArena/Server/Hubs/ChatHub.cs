@@ -80,7 +80,7 @@ namespace IntoTheArena.Server.Hubs
         public override Task OnConnectedAsync()
         {
             
-            Console.WriteLine("Connected");
+           // Console.WriteLine("Connected");
             return base.OnConnectedAsync();
         }
 

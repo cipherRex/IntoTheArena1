@@ -13,15 +13,37 @@
 @inject NavigationManager navigationManager
 @using System.Text.Json.Serialization
 @layout EmptyLayout
+@using System.Text.Json
 
-<div class="webgl-content">
-    <div id="unityContainer" style="width: 960px; height: 600px"></div>
-    <div class="footer">
-        <div class="webgl-logo"></div>
-        <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-        <div class="title">unity6</div>
+    <div class="webgl-content">
+        <div id="unityContainer" style="width: 960px; height: 600px"></div>
+        <div class="footer">
+            <div class="webgl-logo"></div>
+            <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+            <div class="title">unity6</div>
+        </div>
+
+
+        <div>
+            <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = "Swing")">
+            <label for="optSwing">Swing</label>
+        </div>
+
+        <div>
+            <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => assignAction('B'))">
+            <label for="optBlock">Block</label>
+        </div>
+
+        <div>
+            <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => assignAction('R'))">
+            <label for="optRest">Rest</label>
+        </div>
+
+        <div>
+            <button type="button" disabled="@DisallowSubmit">SUBMIT</button>
+        </div>
+
     </div>
-</div>
 
 
 @code
@@ -29,43 +51,59 @@
     [Parameter]
     public string Info { get; set; }
 
+    private string _role = "";
+    private string _sessionId = "";
+    private string _fighterId = "";
+
+    private string _action = "";
+
+    public bool DisallowSubmit
+    {
+        get
+        {
+            return _action == "";
+        }
+    }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            //await JSRuntime.InvokeVoidAsync("jsInterop.startGame");
+            //﻿{"SessionId":"e0231f99-e3de-422b-b991-4314fcc9ffb2","FighterId":"3a5c704b-07a9-4fcb-81f5-756c9bf6e054","Role":"Black"}
 
-            await JSRuntime.InvokeVoidAsync(
-            "intoTheArenaFunctions.startGame");
+            dynamic dynamicInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(this.Info);
+            _role = dynamicInfo.Role;
+            _sessionId = dynamicInfo.SessionId;
+            _fighterId = dynamicInfo.FighterId;
+
+
+            Console.WriteLine(this.Info);
+            await JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.startGame");
+
+
+
         }
 
     }
+
+    void assignAction(char Action)
+    {
+        switch (Action)
+        {
+            case 'S':
+                _action = "Swing";
+                break;
+
+
+            case 'B':
+                _action = "Block";
+                break;
+
+            case 'R':
+                _action = "Rest";
+                break;
+
+        }
+        // _action = Action;
+    }
 }
-@*<h3>Todo (@todos.Count(todo => !todo.IsDone))</h3>
-
-    <ul>
-        @foreach (var todo in todos)
-        {
-            <li>
-                <input type="checkbox" @bind="todo.IsDone" />
-                <input @bind="todo.Title" />
-            </li>
-        }
-    </ul>
-
-    <input placeholder="Something todo" @bind="newTodo" />
-    <button @onclick="AddTodo">Add todo</button>
-
-    @code {
-        private IList<TodoItem> todos = new List<TodoItem>();
-        private string newTodo;
-
-        private void AddTodo()
-        {
-            if (!string.IsNullOrWhiteSpace(newTodo))
-            {
-                todos.Add(new TodoItem { Title = newTodo });
-                newTodo = string.Empty;
-            }
-        }
-    }*@

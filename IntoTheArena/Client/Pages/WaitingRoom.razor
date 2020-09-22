@@ -303,7 +303,7 @@
 
         Fighter newFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(e.MessageContent);
 
-        Console.WriteLine($"Blazor: receive {e.MessageType} : {e.MessageContent}");
+      //  Console.WriteLine($"Blazor: receive {e.MessageType} : {e.MessageContent}");
         bool isMine = false;
         if (!string.IsNullOrWhiteSpace(newFighter.ownerEmail))
         {
@@ -337,7 +337,7 @@
 
     void Challenged(object sender, ChallengedEventArgs e)
     {
-        Console.WriteLine(e.MessageContent);
+       // Console.WriteLine(e.MessageContent);
         Fighter challengingFighter = System.Text.Json.JsonSerializer.Deserialize<Fighter>(e.MessageContent);
         _challengerIDs.Add(challengingFighter.id);
         StateHasChanged();
@@ -346,7 +346,7 @@
 
     void ChallengeAccepted(object sender, ChallengeAcceptedEventArgs e)
     {
-        Console.WriteLine("", "BEGIN FIGHT! ", e.MessageContent);
+     //   Console.WriteLine("", "BEGIN FIGHT! ", e.MessageContent);
         NavigationManager.NavigateTo($"todo/{e.MessageContent}");
 
     }
@@ -369,8 +369,8 @@
         catch (Exception e)
         {
             message = $"ERROR: Failed to start EnterLobby {e.Message}";
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+        //    Console.WriteLine(e.Message);
+        //    Console.WriteLine(e.StackTrace);
         }
     }
 
@@ -392,8 +392,8 @@
         catch (Exception e)
         {
             message = $"ERROR: Failed to start EnterLobby {e.Message}";
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+         //   Console.WriteLine(e.Message);
+          //  Console.WriteLine(e.StackTrace);
         }
     }
 
@@ -409,7 +409,7 @@
 
             var ChallengerFighterId = "ChallengerFighterId";
             ((IDictionary<string, object>)expandoObject)[ChallengerFighterId] = _currentlySelectedFighterId;
-
+            
 
             serializedFighter = System.Text.Json.JsonSerializer.Serialize(expandoObject);
 
@@ -423,8 +423,8 @@
         catch (Exception e)
         {
             message = $"ERROR: Failed to start EnterLobby {e.Message}";
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+         //   Console.WriteLine(e.Message);
+         //   Console.WriteLine(e.StackTrace);
         }
     }
 
@@ -454,8 +454,8 @@
         catch (Exception e)
         {
             message = $"ERROR: Failed to start EnterLobby {e.Message}";
-            Console.WriteLine(e.Message);
-            Console.WriteLine(e.StackTrace);
+        //    Console.WriteLine(e.Message);
+         //   Console.WriteLine(e.StackTrace);
         }
     }
 
@@ -463,7 +463,7 @@
     {
         try
         {
-            ExitLobby();
+             ExitLobby();
         }
         catch (AccessTokenNotAvailableException exception)
         {
