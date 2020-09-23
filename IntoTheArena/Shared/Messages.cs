@@ -17,5 +17,8 @@ namespace IntoTheArena.Shared
 
             public static string CHALLENGE = "Challenge";
             public static string ACCEPT_CHALLENGE = "ChallengeAccepted";
+
+            public static string COMBAT_ROUND_RESULT = "CombatRoundResult";
+
     }
 }

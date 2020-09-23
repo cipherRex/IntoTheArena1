@@ -53,6 +53,11 @@ namespace IntoTheArena.Client.Data
                     HandleChallengeAccepted(_username, message);
                 });
 
+                _hubConnection.On<string>(Messages.COMBAT_ROUND_RESULT, (message) =>
+                {
+                    HandleCombatRoundResult( message);
+                });
+
                 await _hubConnection.StartAsync();
 
                 //Console.WriteLine("ChatClient:calling Start Returned");
@@ -91,6 +96,15 @@ namespace IntoTheArena.Client.Data
         }
         public event ChallengeAcceptedEventHandler ChallengeAccepted;
         public delegate void ChallengeAcceptedEventHandler(object sender, ChallengeAcceptedEventArgs e);
+
+        //private void HandleCombatRoundResult(string username, string message)
+        private void HandleCombatRoundResult(string message)
+        {
+            //CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs(username, message));
+            CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs(message));
+        }
+        public event CombatRoundResultEventHandler CombatRoundResult;
+        public delegate void CombatRoundResultEventHandler(object sender, CombatRoundResultEventArgs e);
 
         public async Task SendAsync(string message)
         {
@@ -181,6 +195,20 @@ namespace IntoTheArena.Client.Data
         public ChallengeAcceptedEventArgs(string messageType, string messageContent)
         {
             MessageType = messageType;
+            MessageContent = messageContent;
+        }
+
+    }
+
+    public class CombatRoundResultEventArgs : EventArgs
+    {
+        //public string MessageType { get; set; }
+        public string MessageContent { get; set; }
+
+        //public CombatRoundResultEventArgs(string messageType, string messageContent)
+        public CombatRoundResultEventArgs(string messageContent)
+        {
+            //MessageType = messageType;
             MessageContent = messageContent;
         }
 

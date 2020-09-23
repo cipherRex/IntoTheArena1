@@ -14,6 +14,7 @@
 @using System.Text.Json.Serialization
 @layout EmptyLayout
 @using System.Text.Json
+@using IntoTheArena.Shared.CombatManagement
 
     <div class="webgl-content">
         <div id="unityContainer" style="width: 960px; height: 600px"></div>
@@ -25,22 +26,22 @@
 
 
         <div>
-            <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = "Swing")">
+            <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
             <label for="optSwing">Swing</label>
         </div>
 
         <div>
-            <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => assignAction('B'))">
+            <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => _action = CombatAction.BLOCK)">
             <label for="optBlock">Block</label>
         </div>
 
         <div>
-            <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => assignAction('R'))">
+            <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => _action = CombatAction.REST)">
             <label for="optRest">Rest</label>
         </div>
 
         <div>
-            <button type="button" disabled="@DisallowSubmit">SUBMIT</button>
+            <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
         </div>
 
     </div>
@@ -54,56 +55,79 @@
     private string _role = "";
     private string _sessionId = "";
     private string _fighterId = "";
+    private string _playerId = "";
 
-    private string _action = "";
+    //private string _action = "";
+    private CombatAction _action = CombatAction.UNASSIGNED;
+
+    ChatClient _chatClient = null;
 
     public bool DisallowSubmit
     {
         get
         {
-            return _action == "";
+            return _action == CombatAction.UNASSIGNED;
         }
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+
+        //﻿{"SessionId":"e0231f99-e3de-422b-b991-4314fcc9ffb2","FighterId":"3a5c704b-07a9-4fcb-81f5-756c9bf6e054","Role":"Black"}
+
+        dynamic dynamicInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(this.Info);
+        _role = dynamicInfo.Role;
+        _sessionId = dynamicInfo.SessionId;
+        _fighterId = dynamicInfo.FighterId;
+        _playerId = dynamicInfo.PlayerId;
+
+
+        _chatClient = new ChatClient(_playerId, navigationManager);
+        _chatClient.CombatRoundResult += OnCombatRoundResult;
+
+    }
+
+    void OnCombatRoundResult(object sender, CombatRoundResultEventArgs e)
+    {
+        ;
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            //﻿{"SessionId":"e0231f99-e3de-422b-b991-4314fcc9ffb2","FighterId":"3a5c704b-07a9-4fcb-81f5-756c9bf6e054","Role":"Black"}
-
-            dynamic dynamicInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(this.Info);
-            _role = dynamicInfo.Role;
-            _sessionId = dynamicInfo.SessionId;
-            _fighterId = dynamicInfo.FighterId;
-
-
-            Console.WriteLine(this.Info);
             await JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.startGame");
-
-
-
         }
-
     }
 
-    void assignAction(char Action)
+    async void submitMove()
     {
-        switch (Action)
-        {
-            case 'S':
-                _action = "Swing";
-                break;
 
+        CombatMove combatMove = new CombatMove() { SessionId = _sessionId, FighterId = _fighterId, PlayerId = _playerId, Action = _action };
 
-            case 'B':
-                _action = "Block";
-                break;
-
-            case 'R':
-                _action = "Rest";
-                break;
-
-        }
-        // _action = Action;
+        var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
+        var response = await http.PostAsJsonAsync("Combat/CombatMove", combatMove);
     }
+
+    //void assignAction(char Action)
+    //{
+    //    switch (Action)
+    //    {
+    //        case 'S':
+    //            _action = CombatAction.SWING;
+    //            break;
+
+
+    //        case 'B':
+    //            _action = CombatAction.BLOCK;
+    //            break;
+
+    //        case 'R':
+    //            _action = CombatAction.REST;
+    //            break;
+
+    //    }
+    //    // _action = Action;
+    //}
 }

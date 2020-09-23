@@ -23,5 +23,10 @@ namespace IntoTheArena.Shared.CombatManagement
             return newSessionId;
         }
 
+        public Dictionary<string, CombatSession> Sessions 
+        { 
+            get { return _combatSessions; }
+        }
+
     }
 }

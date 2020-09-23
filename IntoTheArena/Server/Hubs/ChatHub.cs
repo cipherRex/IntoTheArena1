@@ -33,6 +33,11 @@ namespace IntoTheArena.Server.Hubs
             await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
         }
 
+        public async Task SendCombatResult(List<string> PlayerIds, string message)
+        {
+            await Clients.AllExcept(allConnetionIdsBut(PlayerIds)).SendAsync(Messages.COMBAT_ROUND_RESULT,  message);
+        }
+
         public async Task AcceptChallenge(string CombatSessionId,string user, string Player1Id, string Player2Id, string Fighter1Id, string Fighter2Id)
         {
             //List<string> list = new List<string>();
@@ -50,11 +55,13 @@ namespace IntoTheArena.Server.Hubs
             Dictionary<string, string> message1 = new Dictionary<string, string>();
             message1["SessionId"] = CombatSessionId;
             message1["FighterId"] = Fighter1Id;
+            message1["PlayerId"] = Player1Id;
             message1["Role"] = "White";
 
             Dictionary<string, string> message2 = new Dictionary<string, string>();
             message2["SessionId"] = CombatSessionId;
             message2["FighterId"] = Fighter2Id;
+            message2["PlayerId"] = Player2Id;
             message2["Role"] = "Black";
 
             await Clients.AllExcept(allConnetionIdsBut(Player1Id)).SendAsync(Messages.ACCEPT_CHALLENGE, user, System.Text.Json.JsonSerializer.Serialize(message1));
