@@ -38,7 +38,9 @@ namespace IntoTheArena.Server.Controllers
             if (result != null) 
             {
                 List<string> playerIds = new List<string>();
-                playerIds.Add(_combatManager.Sessions[Move.SessionId].)
+                playerIds.Add(_combatManager.Sessions[Move.SessionId].Player1Id);
+                playerIds.Add(_combatManager.Sessions[Move.SessionId].Player2Id);
+
                 //await _chatHubContext.Clients.All.SendAsync(Messages.ENTER_LOBBY, _userEmail, JsonSerializer.Serialize(result));
                 await _chatHubContext.SendCombatResult(playerIds, System.Text.Json.JsonSerializer.Serialize(result));
 

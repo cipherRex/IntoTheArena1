@@ -18,7 +18,8 @@ namespace IntoTheArena.Shared.CombatManagement
             _history.Add(new CombatRound());
         }
 
-
+        public string Player1Id { get { return _player1Id; } }
+        public string Player2Id { get { return _player2Id; } }
 
         //public void AddPlayer1Action(CombatAction Action) 
         //{
@@ -48,7 +49,7 @@ namespace IntoTheArena.Shared.CombatManagement
 
             CombatRound thisRound =  _history.Last();
 
-            if (_player1Id == Move.FighterId) 
+            if (_player1Id == Move.PlayerId) 
             {
                 thisRound.Player1Action = Move;
             } else 

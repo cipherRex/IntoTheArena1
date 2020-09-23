@@ -47,8 +47,14 @@
     </div>
 
 
+<div>
+    <span>@_foo</span>
+</div>
+
 @code
 {
+    private string _foo = "x";
+
     [Parameter]
     public string Info { get; set; }
 
@@ -84,12 +90,16 @@
 
 
         _chatClient = new ChatClient(_playerId, navigationManager);
+        await _chatClient.StartAsync();
+
         _chatClient.CombatRoundResult += OnCombatRoundResult;
 
     }
 
     void OnCombatRoundResult(object sender, CombatRoundResultEventArgs e)
     {
+        _foo = e.MessageContent;
+        StateHasChanged();
         ;
     }
 

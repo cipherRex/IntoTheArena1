@@ -120,7 +120,7 @@ namespace IntoTheArena.Server.Controllers
             Fighter myFighter = _arena.Fighters().Where(x => x.id == myFighterId).First();
 
             //CombatSession newCombatSession = new CombatSession(challengedFighter.ownerId, challengedFighter.id);
-            string sessionId = _combatManager.AddCombatSession(new CombatSession(challengedFighter.ownerId, challengedFighter.id));
+            string sessionId = _combatManager.AddCombatSession(new CombatSession(myFighter.ownerId, challengedFighter.ownerId));
 
             await _chatHubContext.AcceptChallenge(sessionId, _userEmail, myFighter.ownerId, challengedFighter.ownerId, myFighter.id, challengedFighter.id);
 
