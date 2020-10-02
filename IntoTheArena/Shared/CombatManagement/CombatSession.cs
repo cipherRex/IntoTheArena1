@@ -11,6 +11,9 @@ namespace IntoTheArena.Shared.CombatManagement
         private string _player1Id = "";
         private string _player2Id = "";
 
+        private int _whitePlayerPoints = 10;
+        private int _blackPlayerPoints = 10;
+
         public CombatSession(string Player1Id, string Player2Id) 
         {
             _player1Id = Player1Id;
@@ -51,15 +54,21 @@ namespace IntoTheArena.Shared.CombatManagement
 
             if (_player1Id == Move.PlayerId) 
             {
-                thisRound.Player1Action = Move;
+                thisRound.WhitePlayerMove = Move;
             } else 
             {
-                thisRound.Player2Action = Move;
+                thisRound.BlackPlayerMove = Move;
             }
             
-            if (thisRound.Player1Action != null && thisRound.Player2Action != null) 
+            if (thisRound.WhitePlayerMove != null && thisRound.BlackPlayerMove != null) 
             {
-                return resolveRound(thisRound);
+                CombatResult combatResult = resolveRound(thisRound);
+                _whitePlayerPoints += combatResult.WhitePlayerAdjustment;
+                _blackPlayerPoints += combatResult.BlackPlayerAdjustment;
+
+                _history.Add(new CombatRound());
+
+                return combatResult;
             }
             else { return null; }
         }
@@ -68,21 +77,33 @@ namespace IntoTheArena.Shared.CombatManagement
         {
             CombatResult result = new CombatResult();
 
-            switch (thisRound.Player1Action.Action) 
+            switch (thisRound.WhitePlayerMove.Action) 
             {
                 case CombatAction.SWING:
-                    switch (thisRound.Player2Action.Action)
+                    switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
                             result.AnimationId = 1;
+                            result.WhitePlayerAdjustment = -1;
+                            result.BlackPlayerAdjustment = -1;
+                            result.Victor = "None";
+                            result.Comments = "White and Black both swing. Both receive damage";
                             break;
 
                         case CombatAction.BLOCK:
                             result.AnimationId = 2;
+                            result.WhitePlayerAdjustment = 0;
+                            result.BlackPlayerAdjustment = 0;
+                            result.Victor = "Black";
+                            result.Comments = "White swings and Black blocks. Black wins";
                             break;
 
                         case CombatAction.REST:
                             result.AnimationId = 3;
+                            result.WhitePlayerAdjustment = 0;
+                            result.BlackPlayerAdjustment = -1;
+                            result.Victor = "White";
+                            result.Comments = "White swings and Black attempts to rest. Black loses a point";
                             break;
 
                     }
@@ -90,18 +111,30 @@ namespace IntoTheArena.Shared.CombatManagement
                     break;
 
                 case CombatAction.BLOCK:
-                    switch (thisRound.Player2Action.Action)
+                    switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
                             result.AnimationId = 4;
+                            result.WhitePlayerAdjustment = 0;
+                            result.BlackPlayerAdjustment = 0;
+                            result.Victor = "White";
+                            result.Comments = "White blocks and Black swings. White wins";
                             break;
 
                         case CombatAction.BLOCK:
                             result.AnimationId = 5;
+                            result.WhitePlayerAdjustment = 0;
+                            result.BlackPlayerAdjustment = 0;
+                            result.Victor = "None";
+                            result.Comments = "White blocks and Black swings. Neither wins";
                             break;
 
                         case CombatAction.REST:
                             result.AnimationId = 6;
+                            result.WhitePlayerAdjustment = 0;
+                            result.BlackPlayerAdjustment = +1;
+                            result.Victor = "Black";
+                            result.Comments = "White blocks and Black rests. Black gains a point";
                             break;
 
                     }
@@ -110,18 +143,30 @@ namespace IntoTheArena.Shared.CombatManagement
                     break;
 
                 case CombatAction.REST:
-                    switch (thisRound.Player2Action.Action)
+                    switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
                             result.AnimationId = 7;
+                            result.WhitePlayerAdjustment = -1;
+                            result.BlackPlayerAdjustment = 0;
+                            result.Victor = "Black";
+                            result.Comments = "White attempts to rest but Black swings. White loses a point";
                             break;
 
                         case CombatAction.BLOCK:
                             result.AnimationId = 8;
+                            result.WhitePlayerAdjustment = +1;
+                            result.BlackPlayerAdjustment = 0;
+                            result.Victor = "White";
+                            result.Comments = "White rests as Black blocks. White gains point";
                             break;
 
                         case CombatAction.REST:
                             result.AnimationId = 9;
+                            result.WhitePlayerAdjustment = +1;
+                            result.BlackPlayerAdjustment = +1;
+                            result.Victor = "None";
+                            result.Comments = "White and Black rest. Both gain a point";
                             break;
 
                     }

@@ -56,6 +56,7 @@ namespace IntoTheArena.Client.Data
                 _hubConnection.On<string>(Messages.COMBAT_ROUND_RESULT, (message) =>
                 {
                     HandleCombatRoundResult( message);
+
                 });
 
                 await _hubConnection.StartAsync();
@@ -98,9 +99,10 @@ namespace IntoTheArena.Client.Data
         public delegate void ChallengeAcceptedEventHandler(object sender, ChallengeAcceptedEventArgs e);
 
         //private void HandleCombatRoundResult(string username, string message)
+        //private void HandleCombatRoundResult(string message)
         private void HandleCombatRoundResult(string message)
         {
-            //CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs(username, message));
+            //CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs("username", message));
             CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs(message));
         }
         public event CombatRoundResultEventHandler CombatRoundResult;

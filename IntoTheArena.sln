@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntoTheArena.Client", "Into
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntoTheArena.Shared", "IntoTheArena\Shared\IntoTheArena.Shared.csproj", "{803FF486-1303-418B-A9C5-E1C2C0306A9C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "..\..\..\unity6\Assembly-CSharp.csproj", "{A9B0D9A6-DB87-327A-199A-56A06A6E6F9A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{803FF486-1303-418B-A9C5-E1C2C0306A9C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{803FF486-1303-418B-A9C5-E1C2C0306A9C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{803FF486-1303-418B-A9C5-E1C2C0306A9C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A9B0D9A6-DB87-327A-199A-56A06A6E6F9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A9B0D9A6-DB87-327A-199A-56A06A6E6F9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A9B0D9A6-DB87-327A-199A-56A06A6E6F9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A9B0D9A6-DB87-327A-199A-56A06A6E6F9A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

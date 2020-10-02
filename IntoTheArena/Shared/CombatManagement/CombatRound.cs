@@ -7,13 +7,13 @@ namespace IntoTheArena.Shared.CombatManagement
     class CombatRound
     {
 
-        public CombatMove Player1Action 
+        public CombatMove WhitePlayerMove 
         {
             get;
             set;
         }
 
-        public CombatMove Player2Action
+        public CombatMove BlackPlayerMove
         {
             get;
             set;
