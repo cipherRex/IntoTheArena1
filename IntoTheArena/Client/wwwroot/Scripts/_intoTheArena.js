@@ -30,13 +30,28 @@ function onFighterSelected(data)
 
 window.intoTheArenaFunctions = {
 
+
+    fooFunc: function () {
+        //var unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json", { onProgress: UnityProgress });
+        //debugger;
+        var fooString = '{"functionName":"SlashSlash","player1Special":"false","player2Special":"false","player1Bleed":"1","player2Bleed":"2","player1Heal":"false","player2Heal":"false","player1Taunt":"false","player2Taunt":"false"}';
+
+        unityInstance.SendMessage("JavascriptHook", "DoAnimation", fooString);
+        //unityInstance.SendMessage("JavascriptHook", "FooAnimation", fooString);
+
+        //unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json", { onProgress: UnityProgress });
+
+    },
+
     //getSelectedFighterId: function () {
-    triggerAnimation: function (AnimationId) {
+    triggerAnimation: function (Params) {
 
-        debugger;
-        console.log("triggerAnimation", AnimationId);
+        console.log("triggerAnimation", Params);
 
-        alert(AnimationId);
+        //alert(AnimationId); 
+        unityInstance.SendMessage("JavascriptHook", "DoAnimation",Params);
+
+
 
         //var unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json");
 

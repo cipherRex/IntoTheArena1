@@ -16,6 +16,18 @@
 @using System.Text.Json
 @using IntoTheArena.Shared.CombatManagement
 
+<style>
+    .disabledDiv {
+        pointer-events: none;
+        opacity: 0.4;
+    }
+
+    .enabledDiv {
+        pointer-events: all;
+        opacity: 1;
+    }
+</style>
+
 <div class="webgl-content">
     <div id="unityContainer" style="width: 960px; height: 600px"></div>
     <div class="footer">
@@ -24,26 +36,30 @@
         <div class="title">unity6</div>
     </div>
 
+    <div class="@_actionsClass">
+        <div>
+            <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
+            <label for="optSwing">Swing</label>
+        </div>
 
-    <div>
-        <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
-        <label for="optSwing">Swing</label>
+        <div>
+            <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => _action = CombatAction.BLOCK)">
+            <label for="optBlock">Block</label>
+        </div>
+
+        <div>
+            <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => _action = CombatAction.REST)">
+            <label for="optRest">Rest</label>
+        </div>
+
+        <div>
+            <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
+        </div>
     </div>
+</div>
 
-    <div>
-        <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => _action = CombatAction.BLOCK)">
-        <label for="optBlock">Block</label>
-    </div>
-
-    <div>
-        <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => _action = CombatAction.REST)">
-        <label for="optRest">Rest</label>
-    </div>
-
-    <div>
-        <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
-    </div>
-
+<div>
+    <button onclick="javascript: intoTheArenaFunctions.fooFunc();">Click me</button>
 </div>
 
 
@@ -71,6 +87,8 @@
 
     ChatClient _chatClient = null;
 
+    public string _actionsClass = "disabledDiv";
+
     [JSInvokable]
     public static void InitializeCombat()
     {
@@ -80,6 +98,7 @@
     private void UpdateMessage()
     {
         _foo = "UpdateMessage Called!";
+        _actionsClass = "enabledDiv";
         StateHasChanged();
     }
 
@@ -122,13 +141,116 @@
 
         CombatResult combatResult = System.Text.Json.JsonSerializer.Deserialize<CombatResult>(e.MessageContent);
 
-        //await JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", combatResult.AnimationId);
-        //await JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", combatResult.AnimationId);
-        //await JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.initializeFightersDropDown", System.Text.Json.JsonSerializer.Serialize(playerFighterList));
-        JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", combatResult.AnimationId);
+        string animationFunctionName = "";
+        switch (combatResult.AnimationId)
+        {
+            case 0:
+                animationFunctionName = "SlashSlash";
+                break;
 
+            case 1:
+                animationFunctionName = "SlashBlock";
+                break;
+
+            case 2:
+                animationFunctionName = "SlashPower1";
+                break;
+
+            case 3:
+                animationFunctionName = "SlashPower2";
+                break;
+
+            case 4:
+                animationFunctionName = "BlockSlash";
+                break;
+
+            case 5:
+                animationFunctionName = "BlockBlock";
+                break;
+
+            case 6:
+                animationFunctionName = "BlockPower";
+                break;
+
+            case 7:
+                animationFunctionName = "PowerSlash1";
+                break;
+
+            case 8:
+                animationFunctionName = "PowerSlash2";
+                break;
+
+            case 9:
+                animationFunctionName = "PowerBlock";
+                break;
+
+            case 10:
+                animationFunctionName = "PowerPower";
+                break;
+
+            case 11:
+                animationFunctionName = "PowerBlock";
+                break;
+
+            case 12:
+                animationFunctionName = "Player1Win";
+                break;
+
+            case 13:
+                animationFunctionName = "Player2Win";
+                break;
+
+            default:
+                animationFunctionName = "";
+                break;
+
+        }
+
+        //List<KeyValuePair<string, string>> unityParams = new List<KeyValuePair<string, string>>();
+        //unityParams.Add(new KeyValuePair<string, string>("functionName", animationFunctionName));
+        //unityParams.Add(new KeyValuePair<string, string>("player1Special", "false"));
+        //unityParams.Add(new KeyValuePair<string, string>("player2Special", "false"));
+        //unityParams.Add(new KeyValuePair<string, string>("player1Bleed", "1"));
+        //unityParams.Add(new KeyValuePair<string, string>("player2Bleed", "2"));
+        //unityParams.Add(new KeyValuePair<string, string>("player1Heal", "false"));
+        //unityParams.Add(new KeyValuePair<string, string>("player2Heal", "false"));
+        //unityParams.Add(new KeyValuePair<string, string>("player1Taunt", "false"));
+        //unityParams.Add(new KeyValuePair<string, string>("player2Taunt", "false"));
+
+        //Dictionary<string, string> unityParams = new Dictionary<string, string>();
+        //unityParams["functionName"] = animationFunctionName;
+        //unityParams["player1Special"] = "false";
+        //unityParams["player2Special"] = "false";
+        //unityParams["player1Bleed"] = "1";
+        //unityParams["player2Bleed"] = "2";
+        //unityParams["player1Heal"] = "false";
+        //unityParams["player2Heal"] = "false";
+        //unityParams["player1Taunt"] = "false";
+        //unityParams["player2Taunt"] = "false";
+
+        var unityParams = new { functionName = animationFunctionName,
+            player1Special = "false",
+            player2Special = "false",
+            player1Bleed = "1",
+            player2Bleed = "2",
+            player1Heal = "false",
+            player2Heal = "false",
+            player1Taunt = "false",
+            player2Taunt = "false"
+
+        };
+
+        string serializedDictionary = JsonSerializer.Serialize(unityParams);
+        //string serializedDictionary = JsonSerializer.Serialize < Dictionary<string, string>>(unityParams);
+        //string serializedDictionary = JsonSerializer.Serialize<KeyValuePair<string, string>>(unityParams);
+
+
+        //JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", JsonSerializer.Serialize(unityParams));
+        JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", serializedDictionary);
+
+        _actionsClass = "enabledDiv";
         StateHasChanged();
-        ;
+
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -141,6 +263,9 @@
 
     async void submitMove()
     {
+
+        _actionsClass = "disabledDiv";
+        StateHasChanged();
 
         CombatMove combatMove = new CombatMove() { SessionId = _sessionId, FighterId = _fighterId, PlayerId = _playerId, Action = _action };
 
