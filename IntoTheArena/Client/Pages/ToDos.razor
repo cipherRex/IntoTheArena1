@@ -37,6 +37,7 @@
     </div>
 
     <div class="@_actionsClass">
+
         <div>
             <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
             <label for="optSwing">Swing</label>
@@ -54,6 +55,8 @@
 
         <div>
             <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
+
+            @*<button type="button" @onclick="submitMove">SUBMIT</button>*@
         </div>
     </div>
 </div>
@@ -89,8 +92,13 @@
 
     public string _actionsClass = "disabledDiv";
 
+    //[JSInvokable]
+    //public static void InitializeCombat()
+    //{
+    //    action.Invoke();
+    //}
     [JSInvokable]
-    public static void InitializeCombat()
+    public static void OnAnimationIdle()
     {
         action.Invoke();
     }
@@ -228,7 +236,9 @@
         //unityParams["player1Taunt"] = "false";
         //unityParams["player2Taunt"] = "false";
 
-        var unityParams = new { functionName = animationFunctionName,
+        var unityParams = new
+        {
+            functionName = animationFunctionName,
             player1Special = "false",
             player2Special = "false",
             player1Bleed = "1",

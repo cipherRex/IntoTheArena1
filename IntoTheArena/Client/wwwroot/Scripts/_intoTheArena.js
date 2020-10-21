@@ -4,7 +4,7 @@ var _selectedFighterId = '';
 var _playerFighters;
 
 var unityInstance;
-
+//OpeningSequenceComplete
 
 function onFighterSelected(data)
 {
@@ -47,9 +47,12 @@ window.intoTheArenaFunctions = {
     triggerAnimation: function (Params) {
 
         console.log("triggerAnimation", Params);
-
+        //debugger;
         //alert(AnimationId); 
-        unityInstance.SendMessage("JavascriptHook", "DoAnimation",Params);
+        //unityInstance.SendMessage("JavascriptHook", "DoAnimation",Params);
+        unityInstance.SendMessage("JavascriptHook", "BlackSwing", "");
+        unityInstance.SendMessage("JavascriptHook", "WhiteSwing");
+        //unityInstance.SendMessage("JavascriptHook", "WhiteBlock", null);
 
 
 
@@ -165,7 +168,8 @@ window.intoTheArenaFunctions = {
 
     startGame: function () {
         //var unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json", { onProgress: UnityProgress });
-        unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json", { onProgress: UnityProgress });
+        //unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/webGl.json", { onProgress: UnityProgress });
+        unityInstance = UnityLoader.instantiate("unityContainer", "webGl/Build/Build.json", { onProgress: UnityProgress });
 
     },
 
