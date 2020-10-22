@@ -49,7 +49,7 @@ namespace IntoTheArena.Server.Controllers
         }
 
         [HttpPost("AnimationIdled")]
-        public void AnimationIdled([FromBody] string fighterIdAndSessionId)
+        public async void AnimationIdled([FromBody] string fighterIdAndSessionId)
         {
 
             var tuple = Newtonsoft.Json.JsonConvert.DeserializeObject<Tuple<string, string>>(fighterIdAndSessionId);
@@ -63,10 +63,21 @@ namespace IntoTheArena.Server.Controllers
             //check to see if both fighters are now idled. if so, clear out both semaphores and send out signaR notification
             if (_combatManager.Sessions[sessionId].AnimationSemaphore.Where(x => x.Value).Count() == 2)
             {
-                foreach (string key in _combatManager.Sessions[sessionId].AnimationSemaphore.Keys)
+                List<string> keys = _combatManager.Sessions[sessionId].AnimationSemaphore.Keys.ToList<string>();
+
+                foreach (string key in keys)
                 {
-                    _combatManager.Sessions[sessionId].AnimationSemaphore[key] = false;
+                    if (_combatManager.Sessions[sessionId].AnimationSemaphore[key]) 
+                    { 
+                        _combatManager.Sessions[sessionId].AnimationSemaphore[key] = false;
+                    }
                 }
+
+                List<string> playerIds = new List<string>();
+                playerIds.Add(_combatManager.Sessions[sessionId].Player1Id);
+                playerIds.Add(_combatManager.Sessions[sessionId].Player2Id);
+                await  _chatHubContext.SendAnimationsIdled( playerIds, "ok");
+
             }
         }
     }

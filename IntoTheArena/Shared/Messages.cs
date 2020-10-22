@@ -20,5 +20,7 @@ namespace IntoTheArena.Shared
 
             public static string COMBAT_ROUND_RESULT = "CombatRoundResult";
 
+            public static string ANIMATIONS_IDLED = "AnimationsIdled";
+
     }
 }

@@ -28,6 +28,11 @@ namespace IntoTheArena.Server.Hubs
 
         }
 
+        public async Task SendAnimationsIdled(List<string> PlayerIds, string message)
+        {
+            await Clients.AllExcept(allConnetionIdsBut(PlayerIds)).SendAsync(Messages.ANIMATIONS_IDLED,  message);
+        }
+
         public async Task SendChallenge(string user, string recipient,string message)
         {
             await Clients.AllExcept(allConnetionIdsBut(recipient)).SendAsync(Messages.CHALLENGE, user, message);
@@ -37,6 +42,11 @@ namespace IntoTheArena.Server.Hubs
         {
             await Clients.AllExcept(allConnetionIdsBut(PlayerIds)).SendAsync(Messages.COMBAT_ROUND_RESULT,  message);
         }
+
+        //public async Task SendAnimationsIdled(List<string> PlayerIds, string message)
+        //{
+        //    await Clients.AllExcept(allConnetionIdsBut(PlayerIds)).SendAsync(Messages.ANIMATIONS_IDLED, true);
+        //}
 
         public async Task AcceptChallenge(string CombatSessionId,string user, string Player1Id, string Player2Id, string Fighter1Id, string Fighter2Id)
         {

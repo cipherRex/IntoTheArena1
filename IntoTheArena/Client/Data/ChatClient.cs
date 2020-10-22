@@ -59,6 +59,12 @@ namespace IntoTheArena.Client.Data
 
                 });
 
+                _hubConnection.On<string>(Messages.ANIMATIONS_IDLED, (message) =>
+                {
+                    HandleAnimationsIdled(message);
+
+                });
+
                 await _hubConnection.StartAsync();
 
                 //Console.WriteLine("ChatClient:calling Start Returned");
@@ -107,6 +113,16 @@ namespace IntoTheArena.Client.Data
         }
         public event CombatRoundResultEventHandler CombatRoundResult;
         public delegate void CombatRoundResultEventHandler(object sender, CombatRoundResultEventArgs e);
+
+        private void HandleAnimationsIdled(string message)
+        {
+            //CombatRoundResult?.Invoke(this, new CombatRoundResultEventArgs("username", message));
+            HandleAnimationsIdledResult?.Invoke(this, new CombatRoundResultEventArgs(message));
+        }
+        public event HandleAnimationsIdledResultEventHandler HandleAnimationsIdledResult;
+        public delegate void HandleAnimationsIdledResultEventHandler(object sender, CombatRoundResultEventArgs e);
+
+        
 
         public async Task SendAsync(string message)
         {
