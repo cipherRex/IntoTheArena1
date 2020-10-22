@@ -30,6 +30,10 @@ namespace IntoTheArena.Shared.CombatManagement
         AC_BLOCK = 5,
         AC_HEAL = 6,
         AC_GROINED = 7,
-        AC_CLEAVED = 8
+        AC_CLEAVED = 8,
+        AC_DIE = 9,
+        AC_CELEBRATE = 10,
+        AC_LAUGH = 11,
+        AC_RUN = 12
     }
 }

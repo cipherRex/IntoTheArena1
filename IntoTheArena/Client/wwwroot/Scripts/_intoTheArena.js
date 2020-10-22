@@ -187,5 +187,114 @@ window.intoTheArenaFunctions = {
         });;
     }
 
+    ,
+    whiteSwing: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteSwing");
+    },
+
+    whiteBlock: function (serializedBoolArray) {
+        unityInstance.SendMessage("JavascriptHook", "WhiteBlock", serializedBoolArray);
+    },
+
+    whiteParry: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteParry");
+    },
+
+    whiteCounterParry: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteCounterParry");
+    },
+
+    whiteHeal: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteHeal");
+    },
+
+    whiteGashed: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteGashed");
+    },
+
+    whiteGroined: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteGroined");
+    },
+
+    whiteKick: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteKick");
+    },
+
+    whiteTwoHanded: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteTwoHanded");
+    },
+
+    whiteCelebrate: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteCelebrate");
+    },
+
+    whiteLaugh: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteLaugh");
+    },
+
+    whiteRun: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteRun");
+    },
+
+    whiteDie: function () {
+        unityInstance.SendMessage("JavascriptHook", "WhiteDie");
+    },
+
+    blackSwing: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackSwing");
+    },
+
+    blackBlock: function (serializedBoolArray) {
+        unityInstance.SendMessage("JavascriptHook", "BlackBlock", serializedBoolArray);
+    },
+
+    blackParry: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackParry");
+    },
+
+    blackCounterParry: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackCounterParry");
+    },
+
+    blackHeal: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackHeal");
+    },
+
+    blackGashed: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackGashed");
+    },
+
+    blackGroined: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackGroined");
+    },
+
+    blackKick: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackKick");
+    },
+
+    blackTwoHanded: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackTwoHanded");
+    },
+
+    blackCelebrate: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackCelebrate");
+    },
+
+    blackLaugh: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackLaugh");
+    },
+
+    blackRun: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackRun");
+    },
+
+    blackDie: function () {
+        unityInstance.SendMessage("JavascriptHook", "BlackDie");
+    }
+
+    //blackBlock: function (serializedBoolArray) {
+    //    unityInstance.SendMessage("JavascriptHook", "BlackBlock", serializedBoolArray);
+    //},
+
 };
 

@@ -91,6 +91,7 @@
     ChatClient _chatClient = null;
 
     public string _actionsClass = "disabledDiv";
+    Dictionary<int, string> _javascriptHookFunctionNames = null;
 
     //[JSInvokable]
     //public static void InitializeCombat()
@@ -133,6 +134,8 @@
     protected override async Task OnInitializedAsync()
     {
 
+        _javascriptHookFunctionNames = javascriptHookFunctionNames();
+
         //﻿{"SessionId":"e0231f99-e3de-422b-b991-4314fcc9ffb2","FighterId":"3a5c704b-07a9-4fcb-81f5-756c9bf6e054","Role":"Black"}
 
         dynamic dynamicInfo = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>(this.Info);
@@ -168,34 +171,60 @@
 
         CombatResult combatResult = System.Text.Json.JsonSerializer.Deserialize<CombatResult>(e.MessageContent);
 
-        string animationFunctionName = "";
+        //JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.whiteSwing");
 
+        //string serializedForBlackBlock = buildSerializedBooleanArray(new bool[] { true, true });
+        //JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.blackBlock", serializedForBlackBlock);
 
-        var unityParams = new
+        if (combatResult.WhiteAnimationId != AnimationCommand.AC_BLOCK)
         {
-            functionName = animationFunctionName,
-            player1Special = "false",
-            player2Special = "false",
-            player1Bleed = "1",
-            player2Bleed = "2",
-            player1Heal = "false",
-            player2Heal = "false",
-            player1Taunt = "false",
-            player2Taunt = "false"
+            string jsFunctionName = "white" + _javascriptHookFunctionNames[(int)combatResult.WhiteAnimationId];
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+        }
+        else
+        {
+            string jsFunctionName = "white" + _javascriptHookFunctionNames[(int)combatResult.WhiteAnimationId];
 
-        };
+            string serializedForBlock = buildSerializedBooleanArray(new bool[] { true, true });
 
-        string serializedDictionary = JsonSerializer.Serialize(unityParams);
-        //string serializedDictionary = JsonSerializer.Serialize < Dictionary<string, string>>(unityParams);
-        //string serializedDictionary = JsonSerializer.Serialize<KeyValuePair<string, string>>(unityParams);
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName, serializedForBlock);
+        }
 
+        if (combatResult.BlackAnimationId != AnimationCommand.AC_BLOCK)
+        {
+            string jsFunctionName = "black" + _javascriptHookFunctionNames[(int)combatResult.BlackAnimationId];
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+        }
+        else
+        {
+            string jsFunctionName = "black" + _javascriptHookFunctionNames[(int)combatResult.BlackAnimationId];
 
-        //JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", JsonSerializer.Serialize(unityParams));
-        JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.triggerAnimation", serializedDictionary);
+            string serializedForBlock = buildSerializedBooleanArray(new bool[] { true, true });
 
-        _actionsClass = "enabledDiv";
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName, serializedForBlock);
+        }
+
+        //_javascriptHookFunctionNames
+
         StateHasChanged();
 
+    }
+
+    private string buildSerializedBooleanArray(bool[] boolArray)
+    {
+        string tmp = "{\"Items\":[";
+
+        for (int i = 0; i < boolArray.Length; i++)
+        {
+            tmp = tmp + "\"" + boolArray[i].ToString() + "\"";
+            if (i != boolArray.Length - 1)
+            {
+                tmp = tmp + ",";
+            }
+        }
+
+        tmp = tmp + "]}";
+        return tmp;
     }
 
     private void ExecuteAnimation(AnimationCommand animationCommand, string fighterColor)
@@ -283,4 +312,35 @@
     //    }
     //    // _action = Action;
     //}
+
+    private Dictionary<int, string> javascriptHookFunctionNames()
+    {
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+
+        dic[(int)AnimationCommand.AC_BLOCK] = "Block";
+
+        dic[(int)AnimationCommand.AC_SWING] = "Swing";
+        dic[(int)AnimationCommand.AC_PARRY] = "Parry";
+        dic[(int)AnimationCommand.AC_COUNTERPARRY] = "CounterParry";
+        dic[(int)AnimationCommand.AC_KICK] = "Kick";
+        dic[(int)AnimationCommand.AC_CLEAVE] = "TwoHanded";
+
+        dic[(int)AnimationCommand.AC_HEAL] = "Heal";
+
+        dic[(int)AnimationCommand.AC_GROINED] = "Groined";
+        dic[(int)AnimationCommand.AC_CLEAVED] = "Gashed";
+
+        dic[(int)AnimationCommand.AC_DIE] = "Die";
+        dic[(int)AnimationCommand.AC_CELEBRATE] = "Celebrate";
+        dic[(int)AnimationCommand.AC_RUN] = "Run";
+        dic[(int)AnimationCommand.AC_LAUGH] = "Laugh";
+
+
+        return dic;
+
+
+
+    }
+
+
 }
