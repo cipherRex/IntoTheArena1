@@ -105,6 +105,10 @@
 
     private void UpdateMessage()
     {
+        Tuple<string, string> fighterIdAndSessionId = new Tuple<string, string>(_fighterId, _sessionId);
+        var http = HttpClientFactory.CreateClient("IntoTheArena.AnonymousAPI");
+        var response = http.PostAsJsonAsync("Combat/AnimationIdled", JsonSerializer.Serialize<Tuple<string, string>>(fighterIdAndSessionId));
+
         _foo = "UpdateMessage Called!";
         _actionsClass = "enabledDiv";
         StateHasChanged();
@@ -122,6 +126,8 @@
     protected override void OnInitialized()
     {
         action = UpdateMessage;
+
+
     }
 
     protected override async Task OnInitializedAsync()
@@ -260,6 +266,51 @@
 
         _actionsClass = "enabledDiv";
         StateHasChanged();
+
+    }
+
+    private void ExecuteAnimation(AnimationCommand animationCommand, string fighterColor)
+    {
+        string functionName = "";
+
+        switch (animationCommand)
+        {
+            case AnimationCommand.AC_SWING:
+                functionName = "Swing";
+                break;
+
+            case AnimationCommand.AC_PARRY:
+                functionName =  "Parry";
+                break;
+
+            case AnimationCommand.AC_COUNTERPARRY:
+                functionName =  "CounterParry";
+                break;
+
+            case AnimationCommand.AC_KICK:
+                functionName =  "Kick";
+                break;
+
+            case AnimationCommand.AC_CLEAVE:
+                functionName =  "TwoHanded";
+                break;
+
+            case AnimationCommand.AC_BLOCK:
+                functionName = "Block";
+                break;
+
+            case AnimationCommand.AC_GROINED:
+                functionName = "Groined";
+                break;
+
+            case AnimationCommand.AC_HEAL:
+                functionName = "Heal";
+                break;
+
+            case AnimationCommand.AC_CLEAVED:
+                functionName = "Gashed";
+                break;
+        }
 
     }
 

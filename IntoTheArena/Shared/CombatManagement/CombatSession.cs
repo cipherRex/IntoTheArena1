@@ -14,10 +14,24 @@ namespace IntoTheArena.Shared.CombatManagement
         private int _whitePlayerPoints = 10;
         private int _blackPlayerPoints = 10;
 
+        Dictionary<string, bool> _animationSemaphore = new Dictionary<string, bool>();
+
+        public Dictionary<string, bool> AnimationSemaphore 
+        { 
+            get 
+            {
+                return _animationSemaphore;
+            }
+        }
+
         public CombatSession(string Player1Id, string Player2Id) 
         {
             _player1Id = Player1Id;
             _player2Id = Player2Id;
+
+            _animationSemaphore[Player1Id] = false;
+            _animationSemaphore[Player2Id] = false;
+
             _history.Add(new CombatRound());
         }
 
@@ -83,62 +97,102 @@ namespace IntoTheArena.Shared.CombatManagement
                     switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
-                            result.AnimationId = 1;
-                            result.WhitePlayerAdjustment = -1;
-                            result.BlackPlayerAdjustment = -1;
-                            result.Victor = "None";
-                            result.Comments = "White and Black both swing. Both receive damage";
+                            //White swings. 
+                            //Black swings.
+
+                            Random rng = new Random();
+                            bool randomBool = rng.Next(0, 2) > 0;
+                            if (randomBool)
+                            {
+                                //white wins
+                                result.WhiteAnimationId = AnimationCommand.AC_COUNTERPARRY;
+                                result.BlackAnimationId = AnimationCommand.AC_PARRY;
+                                result.WhitePlayerAdjustment = 0;
+                                result.BlackPlayerAdjustment = -1;
+                                result.Victor = "White";
+                                result.Comments = "White and Black both swing. White counter parries. Black takes damage.";
+                            }
+                            else
+                            {
+                                //black wins
+                                result.WhiteAnimationId = AnimationCommand.AC_PARRY;
+                                result.BlackAnimationId = AnimationCommand.AC_COUNTERPARRY;
+                                result.WhitePlayerAdjustment = -1;
+                                result.BlackPlayerAdjustment = 0;
+                                result.Victor = "Black";
+                                result.Comments = "White and Black both swing. Black counter parries. White takes damage.";
+                            }
+
+
                             break;
 
                         case CombatAction.BLOCK:
-                            result.AnimationId = 2;
+                            //White swings. 
+                            //Black blocks.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_SWING;
+                            result.BlackAnimationId = AnimationCommand.AC_BLOCK;
                             result.WhitePlayerAdjustment = 0;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "Black";
-                            result.Comments = "White swings and Black blocks. Black wins";
+                            result.Comments = "White swings. Black blocks.";
                             break;
 
                         case CombatAction.REST:
-                            result.AnimationId = 3;
+                            //White swings. 
+                            //Black rests.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_KICK;
+                            result.BlackAnimationId = AnimationCommand.AC_GROINED;
                             result.WhitePlayerAdjustment = 0;
                             result.BlackPlayerAdjustment = -1;
                             result.Victor = "White";
-                            result.Comments = "White swings and Black attempts to rest. Black loses a point";
+                            result.Comments = "Black attempts to heal but white thwarts.";
                             break;
-
                     }
 
                     break;
-
+                    
                 case CombatAction.BLOCK:
                     switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
-                            result.AnimationId = 4;
+                            //White blocks. 
+                            //Black swings.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_BLOCK;
+                            result.BlackAnimationId = AnimationCommand.AC_SWING;
                             result.WhitePlayerAdjustment = 0;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "White";
-                            result.Comments = "White blocks and Black swings. White wins";
+                            result.Comments = "Black swings and white blocks.";
                             break;
 
                         case CombatAction.BLOCK:
-                            result.AnimationId = 5;
+                            //White blocks. 
+                            //Black swings.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_BLOCK;
+                            result.BlackAnimationId = AnimationCommand.AC_BLOCK;
                             result.WhitePlayerAdjustment = 0;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "None";
-                            result.Comments = "White blocks and Black swings. Neither wins";
+                            result.Comments = "Black white block.";
                             break;
 
                         case CombatAction.REST:
-                            result.AnimationId = 6;
+                            //White blocks. 
+                            //Black heals.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_BLOCK;
+                            result.BlackAnimationId = AnimationCommand.AC_HEAL;
                             result.WhitePlayerAdjustment = 0;
-                            result.BlackPlayerAdjustment = +1;
+                            result.BlackPlayerAdjustment = 1;
                             result.Victor = "Black";
-                            result.Comments = "White blocks and Black rests. Black gains a point";
+                            result.Comments = "Black heals.";
                             break;
 
                     }
-
 
                     break;
 
@@ -146,34 +200,44 @@ namespace IntoTheArena.Shared.CombatManagement
                     switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
-                            result.AnimationId = 7;
+                            //White heals. 
+                            //Black swings.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_GROINED;
+                            result.BlackAnimationId = AnimationCommand.AC_SWING;
                             result.WhitePlayerAdjustment = -1;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "Black";
-                            result.Comments = "White attempts to rest but Black swings. White loses a point";
+                            result.Comments = "White attempts to hea but is thwarted";
                             break;
 
                         case CombatAction.BLOCK:
-                            result.AnimationId = 8;
-                            result.WhitePlayerAdjustment = +1;
+                            //White heals. 
+                            //Black swings.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_HEAL;
+                            result.BlackAnimationId = AnimationCommand.AC_BLOCK;
+                            result.WhitePlayerAdjustment = 1;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "White";
-                            result.Comments = "White rests as Black blocks. White gains point";
+                            result.Comments = "White attempts heals";
                             break;
 
                         case CombatAction.REST:
-                            result.AnimationId = 9;
-                            result.WhitePlayerAdjustment = +1;
-                            result.BlackPlayerAdjustment = +1;
+                            //White heals. 
+                            //Black swings.
+
+                            result.WhiteAnimationId = AnimationCommand.AC_HEAL;
+                            result.BlackAnimationId = AnimationCommand.AC_HEAL;
+                            result.WhitePlayerAdjustment = 1;
+                            result.BlackPlayerAdjustment = 1;
                             result.Victor = "None";
-                            result.Comments = "White and Black rest. Both gain a point";
+                            result.Comments = "White and Black heal";
                             break;
 
                     }
 
-
                     break;
-
 
             }
 
