@@ -16,7 +16,8 @@ namespace IntoTheArena.Shared.CombatManagement
         public int WhitePlayerAdjustment { get; set; }
         public int BlackPlayerAdjustment { get; set; }
         List<CombatAction> Restrictions { get; set; }
-
+        public int WhitePlayerTotalHP { get; set; }
+        public int BlackPlayerTotalHP { get; set; }
 
     }
 

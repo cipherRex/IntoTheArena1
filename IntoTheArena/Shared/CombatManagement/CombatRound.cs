@@ -19,5 +19,7 @@ namespace IntoTheArena.Shared.CombatManagement
             set;
         }
 
+        public CombatResult Result { get; set; }
+
     }
 }

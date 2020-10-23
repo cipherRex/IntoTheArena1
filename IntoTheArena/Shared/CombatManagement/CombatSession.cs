@@ -11,8 +11,23 @@ namespace IntoTheArena.Shared.CombatManagement
         private string _player1Id = "";
         private string _player2Id = "";
 
-        private int _whitePlayerPoints = 10;
-        private int _blackPlayerPoints = 10;
+        //private int _whitePlayerPoints = 10;
+        //private int _blackPlayerPoints = 10;
+        public int WhitePlayerPoints 
+        { 
+            get 
+            {
+                return 15 + _history.Where(x => x.Result != null).Select(x => x.Result.WhitePlayerAdjustment).Sum();
+            }
+        }
+        public int BlackPlayerPoints
+        {
+            get
+            {
+                return 15 + _history.Where(x => x.Result != null).Select(x => x.Result.BlackPlayerAdjustment).Sum();
+            }
+        }
+
 
         Dictionary<string, bool> _animationSemaphore = new Dictionary<string, bool>();
 
@@ -77,8 +92,9 @@ namespace IntoTheArena.Shared.CombatManagement
             if (thisRound.WhitePlayerMove != null && thisRound.BlackPlayerMove != null) 
             {
                 CombatResult combatResult = resolveRound(thisRound);
-                _whitePlayerPoints += combatResult.WhitePlayerAdjustment;
-                _blackPlayerPoints += combatResult.BlackPlayerAdjustment;
+                thisRound.Result = combatResult;
+               // _whitePlayerPoints += combatResult.WhitePlayerAdjustment;
+               // _blackPlayerPoints += combatResult.BlackPlayerAdjustment;
 
                 _history.Add(new CombatRound());
 
@@ -145,7 +161,7 @@ namespace IntoTheArena.Shared.CombatManagement
                             result.WhiteAnimationId = AnimationCommand.AC_KICK;
                             result.BlackAnimationId = AnimationCommand.AC_GROINED;
                             result.WhitePlayerAdjustment = 0;
-                            result.BlackPlayerAdjustment = -1;
+                            result.BlackPlayerAdjustment = -2;
                             result.Victor = "White";
                             result.Comments = "Black attempts to heal but white thwarts.";
                             break;
@@ -182,7 +198,7 @@ namespace IntoTheArena.Shared.CombatManagement
 
                         case CombatAction.REST:
                             //White blocks. 
-                            //Black heals.
+                            //Black rests.
 
                             result.WhiteAnimationId = AnimationCommand.AC_BLOCK;
                             result.BlackAnimationId = AnimationCommand.AC_HEAL;
@@ -200,19 +216,19 @@ namespace IntoTheArena.Shared.CombatManagement
                     switch (thisRound.BlackPlayerMove.Action)
                     {
                         case CombatAction.SWING:
-                            //White heals. 
+                            //White rests. 
                             //Black swings.
 
                             result.WhiteAnimationId = AnimationCommand.AC_GROINED;
-                            result.BlackAnimationId = AnimationCommand.AC_SWING;
-                            result.WhitePlayerAdjustment = -1;
+                            result.BlackAnimationId = AnimationCommand.AC_KICK;
+                            result.WhitePlayerAdjustment = -2;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "Black";
-                            result.Comments = "White attempts to hea but is thwarted";
+                            result.Comments = "White attempts to heal but is thwarted";
                             break;
 
                         case CombatAction.BLOCK:
-                            //White heals. 
+                            //White rests. 
                             //Black swings.
 
                             result.WhiteAnimationId = AnimationCommand.AC_HEAL;
@@ -224,8 +240,8 @@ namespace IntoTheArena.Shared.CombatManagement
                             break;
 
                         case CombatAction.REST:
-                            //White heals. 
-                            //Black swings.
+                            //White rests. 
+                            //Black rests.
 
                             result.WhiteAnimationId = AnimationCommand.AC_HEAL;
                             result.BlackAnimationId = AnimationCommand.AC_HEAL;
@@ -240,6 +256,14 @@ namespace IntoTheArena.Shared.CombatManagement
                     break;
 
             }
+
+            int wHP = WhitePlayerPoints + result.WhitePlayerAdjustment;
+            System.Diagnostics.Debug.WriteLine("wHP: " + wHP);
+            result.WhitePlayerTotalHP = wHP;    //WhitePlayerPoints + result.WhitePlayerAdjustment;
+            
+            int bHP = BlackPlayerPoints + result.BlackPlayerAdjustment; 
+            System.Diagnostics.Debug.WriteLine("bHP: " + bHP);
+            result.BlackPlayerTotalHP = bHP;    //BlackPlayerPoints + result.BlackPlayerAdjustment;
 
             return result;
         }

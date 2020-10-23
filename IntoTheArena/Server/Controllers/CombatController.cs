@@ -42,6 +42,13 @@ namespace IntoTheArena.Server.Controllers
                 playerIds.Add(_combatManager.Sessions[Move.SessionId].Player1Id);
                 playerIds.Add(_combatManager.Sessions[Move.SessionId].Player2Id);
 
+                //_combatManager.Sessions[Move.SessionId].
+                Console.WriteLine("WhitePlayerTotalHP: " + result.WhitePlayerTotalHP.ToString());
+                Console.WriteLine("BlackPlayerTotalHP: " + result.BlackPlayerTotalHP.ToString());
+
+                System.Diagnostics.Debug.WriteLine("white hp: " + result.WhitePlayerTotalHP);
+                System.Diagnostics.Debug.WriteLine("black hp: " + result.BlackPlayerTotalHP);
+
                 //await _chatHubContext.Clients.All.SendAsync(Messages.ENTER_LOBBY, _userEmail, JsonSerializer.Serialize(result));
                 await _chatHubContext.SendCombatResult(playerIds, System.Text.Json.JsonSerializer.Serialize(result));
 

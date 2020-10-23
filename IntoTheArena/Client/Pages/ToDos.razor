@@ -28,6 +28,10 @@
     }
 </style>
 
+<div>
+    You are the @_role Knight
+</div>
+
 <div class="webgl-content">
     <div id="unityContainer" style="width: 960px; height: 600px"></div>
     <div class="footer">
@@ -203,6 +207,40 @@
 
             JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName, serializedForBlock);
         }
+
+        if (combatResult.WhitePlayerAdjustment > 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "whiteHealEffect", combatResult.WhitePlayerAdjustment);
+        }
+        else if (combatResult.WhitePlayerAdjustment < 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "whiteBleedEffect", combatResult.WhitePlayerAdjustment);
+        }
+
+        if (combatResult.BlackPlayerAdjustment > 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "blackHealEffect", combatResult.BlackPlayerAdjustment);
+        }
+        else if (combatResult.BlackPlayerAdjustment < 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "blackBleedEffect", combatResult.BlackPlayerAdjustment);
+        }
+
+        if (combatResult.WhitePlayerAdjustment != 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "setWhiteDmg", combatResult.WhitePlayerAdjustment);
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "setWhiteHPs", combatResult.WhitePlayerTotalHP);
+        }
+
+        if (combatResult.BlackPlayerAdjustment != 0)
+        {
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "setBlackDmg", combatResult.BlackPlayerAdjustment);
+            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "setBlackHPs", combatResult.BlackPlayerTotalHP);
+        }
+
+        JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + "setSystemMsg", combatResult.Comments);
+
+
 
         //_javascriptHookFunctionNames
 
