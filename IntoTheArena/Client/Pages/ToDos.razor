@@ -97,6 +97,8 @@
     public string _actionsClass = "disabledDiv";
     Dictionary<int, string> _javascriptHookFunctionNames = null;
 
+    public CombatResult combatResult = null;
+
     //[JSInvokable]
     //public static void InitializeCombat()
     //{
@@ -106,6 +108,7 @@
     public static void OnAnimationIdle()
     {
         action.Invoke();
+
     }
 
     private void UpdateMessage()
@@ -163,6 +166,60 @@
     void OnHandleAnimationsIdledResult(object sender, CombatRoundResultEventArgs e)
     {
         _idleMessage = "OnHandleAnimationsIdledResult " + DateTime.Now.ToLongTimeString();
+        string jsFunctionName;
+
+        if (combatResult != null)
+        {
+            if (combatResult.VictoryData != null)
+            {
+                if (combatResult.VictoryData.FighterId == this._fighterId)
+                {
+                    // I win
+                    switch (_role)
+                    {
+                        case "White":
+                            jsFunctionName = "white" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_CELEBRATE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+
+                            jsFunctionName = "black" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_DIE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+                            break;
+
+                        case "Black":
+                            jsFunctionName = "black" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_CELEBRATE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+
+                            jsFunctionName = "white" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_DIE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+                            break;
+
+                    }
+                }
+                else
+                {
+                    // I lose
+                    switch (_role)
+                    {
+                        case "White":
+                            jsFunctionName = "black" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_CELEBRATE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+
+                            jsFunctionName = "white" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_DIE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+                            break;
+
+                        case "Black":
+                            jsFunctionName = "white" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_CELEBRATE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+
+                            jsFunctionName = "black" + _javascriptHookFunctionNames[(int)AnimationCommand.AC_DIE];
+                            JSRuntime.InvokeVoidAsync("intoTheArenaFunctions." + jsFunctionName);
+                            break;
+
+                    }
+                }
+            }
+        }
 
         _actionsClass = "enabledDiv";
         StateHasChanged();
@@ -173,7 +230,9 @@
     void OnCombatRoundResult(object sender, CombatRoundResultEventArgs e)
     {
 
-        CombatResult combatResult = System.Text.Json.JsonSerializer.Deserialize<CombatResult>(e.MessageContent);
+
+        //CombatResult combatResult = System.Text.Json.JsonSerializer.Deserialize<CombatResult>(e.MessageContent);
+        combatResult = System.Text.Json.JsonSerializer.Deserialize<CombatResult>(e.MessageContent);
 
         //JSRuntime.InvokeVoidAsync("intoTheArenaFunctions.whiteSwing");
 

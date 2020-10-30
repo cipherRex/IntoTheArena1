@@ -19,6 +19,14 @@ namespace IntoTheArena.Shared.CombatManagement
         public int WhitePlayerTotalHP { get; set; }
         public int BlackPlayerTotalHP { get; set; }
 
+        public Victory VictoryData { get; set; }
+}
+
+    public class Victory 
+    {
+        public string FighterId { get; set; }
+        public string Condition { get; set; }
+
     }
 
     public enum AnimationCommand

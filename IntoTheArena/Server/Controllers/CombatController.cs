@@ -49,6 +49,16 @@ namespace IntoTheArena.Server.Controllers
                 System.Diagnostics.Debug.WriteLine("white hp: " + result.WhitePlayerTotalHP);
                 System.Diagnostics.Debug.WriteLine("black hp: " + result.BlackPlayerTotalHP);
 
+                
+                if (result.BlackPlayerTotalHP < 0) 
+                {
+                    result.VictoryData = new Victory() { FighterId = _combatManager.Sessions[Move.SessionId].WhiKnightID, Condition = "DIE" };
+                }
+                else if (result.WhitePlayerTotalHP < 0) 
+                {
+                    result.VictoryData = new Victory() { FighterId = _combatManager.Sessions[Move.SessionId].BlackKnightID, Condition = "DIE" };
+                }
+
                 //await _chatHubContext.Clients.All.SendAsync(Messages.ENTER_LOBBY, _userEmail, JsonSerializer.Serialize(result));
                 await _chatHubContext.SendCombatResult(playerIds, System.Text.Json.JsonSerializer.Serialize(result));
 

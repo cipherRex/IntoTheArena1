@@ -11,6 +11,22 @@ namespace IntoTheArena.Shared.CombatManagement
         private string _player1Id = "";
         private string _player2Id = "";
 
+        public string BlackKnightID 
+        { 
+        get 
+            {
+                return _history[0].BlackPlayerMove.FighterId;
+            }
+        }
+
+        public string WhiKnightID
+        {
+            get
+            {
+                return _history[0].WhitePlayerMove.FighterId;
+            }
+        }
+
         //private int _whitePlayerPoints = 10;
         //private int _blackPlayerPoints = 10;
         public int WhitePlayerPoints 
@@ -311,6 +327,8 @@ namespace IntoTheArena.Shared.CombatManagement
         {
             int ret = 0;
 
+            if (fighterId == WhiKnightID) { 
+
             for(int i = hist.Count - 1; i > -1; i--) 
             { 
 
@@ -337,8 +355,39 @@ namespace IntoTheArena.Shared.CombatManagement
                     }
                     else { break; }
                 }
-            }           
+            }
 
+            } else 
+            {
+                for (int i = hist.Count - 1; i > -1; i--)
+                {
+
+                    if (hist[i].Result != null)
+                    {
+                        if (hist[i].BlackPlayerMove.Action == CombatAction.SWING)
+                        {
+                            if ((hist[i].BlackPlayerMove.FighterId == fighterId))
+                            {
+                                if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
+                            }
+                            else
+                            {
+                                if (hist[i].BlackPlayerMove.Action == CombatAction.REST)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
+                            }
+                        }
+                        else { break; }
+                    }
+                }
+
+            }
             return ret;
         
         }
@@ -347,33 +396,97 @@ namespace IntoTheArena.Shared.CombatManagement
         {
             int ret = 0;
 
-            for (int i = hist.Count - 1; i > -1; i--)
+            if (fighterId == WhiKnightID)
             {
 
-                if (hist[i].Result != null)
+                for (int i = hist.Count - 1; i > -1; i--)
                 {
-                    if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+
+                    if (hist[i].Result != null)
                     {
-                        if ((hist[i].WhitePlayerMove.FighterId == fighterId))
+                        if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
                         {
-                            if (hist[i].BlackPlayerMove.Action == CombatAction.BLOCK)
+                            if ((hist[i].WhitePlayerMove.FighterId == fighterId))
                             {
-                                ret++;
+                                if (hist[i].BlackPlayerMove.Action == CombatAction.BLOCK)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
                             }
-                            else { break; }
-                        }
-                        else
-                        {
-                            if (hist[i].WhitePlayerMove.Action == CombatAction.BLOCK)
+                            else
                             {
-                                ret++;
+                                if (hist[i].WhitePlayerMove.Action == CombatAction.BLOCK)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
                             }
-                            else { break; }
                         }
+                        else { break; }
                     }
-                    else { break; }
                 }
+
             }
+            else
+            {
+                for (int i = hist.Count - 1; i > -1; i--)
+                {
+
+                    if (hist[i].Result != null)
+                    {
+                        if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+                        {
+                            if ((hist[i].WhitePlayerMove.FighterId == fighterId))
+                            {
+                                if (hist[i].BlackPlayerMove.Action == CombatAction.BLOCK)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
+                            }
+                            else
+                            {
+                                if (hist[i].WhitePlayerMove.Action == CombatAction.BLOCK)
+                                {
+                                    ret++;
+                                }
+                                else { break; }
+                            }
+                        }
+                        else { break; }
+                    }
+                }
+
+            }
+
+            //for (int i = hist.Count - 1; i > -1; i--)
+            //{
+
+            //    if (hist[i].Result != null)
+            //    {
+            //        if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+            //        {
+            //            if ((hist[i].WhitePlayerMove.FighterId == fighterId))
+            //            {
+            //                if (hist[i].BlackPlayerMove.Action == CombatAction.BLOCK)
+            //                {
+            //                    ret++;
+            //                }
+            //                else { break; }
+            //            }
+            //            else
+            //            {
+            //                if (hist[i].WhitePlayerMove.Action == CombatAction.BLOCK)
+            //                {
+            //                    ret++;
+            //                }
+            //                else { break; }
+            //            }
+            //        }
+            //        else { break; }
+            //    }
+            //}
 
             return ret;
 
