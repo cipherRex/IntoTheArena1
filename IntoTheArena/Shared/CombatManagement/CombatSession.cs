@@ -158,12 +158,23 @@ namespace IntoTheArena.Shared.CombatManagement
                             //White swings. 
                             //Black rests.
 
+                            int previousHits = numPreviousStrikes(_history, thisRound.WhitePlayerMove.FighterId);
+
                             result.WhiteAnimationId = AnimationCommand.AC_KICK;
                             result.BlackAnimationId = AnimationCommand.AC_GROINED;
                             result.WhitePlayerAdjustment = 0;
-                            result.BlackPlayerAdjustment = -2;
+                            result.BlackPlayerAdjustment = -2 - previousHits;
                             result.Victor = "White";
                             result.Comments = "Black attempts to heal but white thwarts.";
+
+                            if (previousHits != 0) 
+                            {
+                                result.Comments = result.Comments + previousHits + " damage in a row gives bonus damage.";
+
+                                result.WhiteAnimationId = AnimationCommand.AC_CLEAVE;
+                                result.BlackAnimationId = AnimationCommand.AC_CLEAVED;
+                            }
+
                             break;
                     }
 
@@ -200,12 +211,20 @@ namespace IntoTheArena.Shared.CombatManagement
                             //White blocks. 
                             //Black rests.
 
+                            int previousHeals = numPreviousHeals(_history, thisRound.BlackPlayerMove.FighterId);
+
                             result.WhiteAnimationId = AnimationCommand.AC_BLOCK;
                             result.BlackAnimationId = AnimationCommand.AC_HEAL;
                             result.WhitePlayerAdjustment = 0;
-                            result.BlackPlayerAdjustment = 1;
+                            result.BlackPlayerAdjustment = 1 + previousHeals;
                             result.Victor = "Black";
                             result.Comments = "Black heals.";
+
+                            if (previousHeals != 0)
+                            {
+                                result.Comments = result.Comments + "Bonus " + previousHeals + " points for consecutive heals.";
+                            }
+
                             break;
 
                     }
@@ -218,25 +237,45 @@ namespace IntoTheArena.Shared.CombatManagement
                         case CombatAction.SWING:
                             //White rests. 
                             //Black swings.
+                            int previousHits = numPreviousStrikes(_history, thisRound.BlackPlayerMove.FighterId);
 
                             result.WhiteAnimationId = AnimationCommand.AC_GROINED;
                             result.BlackAnimationId = AnimationCommand.AC_KICK;
-                            result.WhitePlayerAdjustment = -2;
+                            result.WhitePlayerAdjustment = -2 - previousHits;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "Black";
                             result.Comments = "White attempts to heal but is thwarted";
-                            break;
+
+
+                            if (previousHits != 0)
+                            {
+                                result.Comments = result.Comments + previousHits + " damage in a row gives bonus damage.";
+
+                                result.WhiteAnimationId = AnimationCommand.AC_CLEAVE;
+                                result.BlackAnimationId = AnimationCommand.AC_CLEAVED;
+                            }
+
+                                break;
 
                         case CombatAction.BLOCK:
                             //White rests. 
                             //Black swings.
 
+                            int previousHeals = numPreviousHeals(_history, thisRound.WhitePlayerMove.FighterId);
+
+
                             result.WhiteAnimationId = AnimationCommand.AC_HEAL;
                             result.BlackAnimationId = AnimationCommand.AC_BLOCK;
-                            result.WhitePlayerAdjustment = 1;
+                            result.WhitePlayerAdjustment = 1 + previousHeals;
                             result.BlackPlayerAdjustment = 0;
                             result.Victor = "White";
-                            result.Comments = "White attempts heals";
+                            result.Comments = "White  heals. ";
+
+                            if (previousHeals != 0)
+                            {
+                                result.Comments = result.Comments + "Bonus " + previousHeals + " points for consecutive heals.";
+                            }
+
                             break;
 
                         case CombatAction.REST:
@@ -266,6 +305,78 @@ namespace IntoTheArena.Shared.CombatManagement
             result.BlackPlayerTotalHP = bHP;    //BlackPlayerPoints + result.BlackPlayerAdjustment;
 
             return result;
+        }
+
+        private int numPreviousStrikes(List<CombatRound> hist, string fighterId) 
+        {
+            int ret = 0;
+
+            for(int i = hist.Count - 1; i > -1; i--) 
+            { 
+
+                if (hist[i].Result != null) 
+                { 
+                    if (hist[i].WhitePlayerMove.Action == CombatAction.SWING) 
+                    { 
+                        if ((hist[i].WhitePlayerMove.FighterId == fighterId) )
+                        {
+                            if (hist[i].BlackPlayerMove.Action == CombatAction.REST)
+                            {
+                                ret++;
+                            }
+                            else { break; }
+                        } 
+                        else 
+                        {
+                            if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+                            {
+                                ret++;
+                            }
+                            else { break; }
+                        }
+                    }
+                    else { break; }
+                }
+            }           
+
+            return ret;
+        
+        }
+
+        private int numPreviousHeals(List<CombatRound> hist, string fighterId)
+        {
+            int ret = 0;
+
+            for (int i = hist.Count - 1; i > -1; i--)
+            {
+
+                if (hist[i].Result != null)
+                {
+                    if (hist[i].WhitePlayerMove.Action == CombatAction.REST)
+                    {
+                        if ((hist[i].WhitePlayerMove.FighterId == fighterId))
+                        {
+                            if (hist[i].BlackPlayerMove.Action == CombatAction.BLOCK)
+                            {
+                                ret++;
+                            }
+                            else { break; }
+                        }
+                        else
+                        {
+                            if (hist[i].WhitePlayerMove.Action == CombatAction.BLOCK)
+                            {
+                                ret++;
+                            }
+                            else { break; }
+                        }
+                    }
+                    else { break; }
+                }
+            }
+
+            return ret;
+
         }
 
     }
