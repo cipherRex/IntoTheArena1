@@ -28,54 +28,56 @@
     }
 </style>
 
-<div class="content px-4">
+<div class="main">
+    <div class="content px-4">
 
-    <div>
-        You are the @_role Knight
-    </div>
-
-    <div class="webgl-content">
-        <div id="unityContainer" style="width: 960px; height: 600px"></div>
-        <div class="footer">
-            <div class="webgl-logo"></div>
-            <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
-            <div class="title">unity6</div>
+        <div>
+            You are the @_role Knight
         </div>
 
-        <div class="@_actionsClass">
-
-            <div>
-                <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
-                <label for="optSwing">Swing</label>
+        <div class="webgl-content">
+            <div id="unityContainer" style="width: 960px; height: 600px"></div>
+            <div class="footer">
+                <div class="webgl-logo"></div>
+                <div class="fullscreen" onclick="unityInstance.SetFullscreen(1)"></div>
+                <div class="title">unity6</div>
             </div>
 
-            <div>
-                <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => _action = CombatAction.BLOCK)">
-                <label for="optBlock">Block</label>
-            </div>
+            <div class="@_actionsClass">
 
-            <div>
-                <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => _action = CombatAction.REST)">
-                <label for="optRest">Rest</label>
-            </div>
+                <div>
+                    <input type="radio" id="optSwing" name="action" value="Swing" @onclick="@(e => _action = CombatAction.SWING)">
+                    <label for="optSwing">Swing</label>
+                </div>
 
-            <div>
-                <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
+                <div>
+                    <input type="radio" id="optBlock" name="action" value="Block" @onclick="@(e => _action = CombatAction.BLOCK)">
+                    <label for="optBlock">Block</label>
+                </div>
 
-                @*<button type="button" @onclick="submitMove">SUBMIT</button>*@
+                <div>
+                    <input type="radio" id="optRest" name="action" value="Rest" @onclick="@(e => _action = CombatAction.REST)">
+                    <label for="optRest">Rest</label>
+                </div>
+
+                <div>
+                    <button type="button" disabled="@DisallowSubmit" @onclick="submitMove">SUBMIT</button>
+
+                    @*<button type="button" @onclick="submitMove">SUBMIT</button>*@
+                </div>
             </div>
         </div>
+
+        <div>
+            <button onclick="javascript: intoTheArenaFunctions.fooFunc();">Click me</button>
+        </div>
+
+
+        <div>
+            <span>@_idleMessage</span>
+        </div>
+
     </div>
-
-    <div>
-        <button onclick="javascript: intoTheArenaFunctions.fooFunc();">Click me</button>
-    </div>
-
-
-    <div>
-        <span>@_idleMessage</span>
-    </div>
-
 </div>
 
     @code
