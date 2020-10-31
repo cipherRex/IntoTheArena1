@@ -69,6 +69,8 @@ namespace IntoTheArena.Server
 
             services.AddSingleton<IntoTheArena.Shared.CombatManagement.CombatManager>();
 
+            System.Data.Common.DbProviderFactories.RegisterFactory("system.data.sqlclient", typeof(Microsoft.Data.SqlClient.SqlClientFactory));
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

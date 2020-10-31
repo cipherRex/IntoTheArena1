@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SignalR;
+using System.Data;
+using System.Data.Common;
 
 namespace IntoTheArena.Server.Controllers
 {
@@ -30,7 +32,10 @@ namespace IntoTheArena.Server.Controllers
 
 
         //public LobbyController(UserManager<ApplicationUser> userManager, Arena arena, Hubs.ChatHub chatHubContext)
-        public LobbyController(UserManager<ApplicationUser> userManager, Arena arena, Hubs.ChatHub chatHubContext, IntoTheArena.Shared.CombatManagement.CombatManager combatManager)
+        public LobbyController(UserManager<ApplicationUser> userManager, 
+                                Arena arena, 
+                                Hubs.ChatHub chatHubContext, 
+                                IntoTheArena.Shared.CombatManagement.CombatManager combatManager)
         {
             
             _chatHubContext = chatHubContext;
@@ -51,15 +56,19 @@ namespace IntoTheArena.Server.Controllers
 
 
         [HttpGet("PlayerFighters")]
-        public async Task<IEnumerable<Fighter>> PlayerFighters()
+        //public async Task<IEnumerable<Fighter>> PlayerFighters()
+            public List<Fighter> PlayerFighters()
         {
 
-            List<Fighter> fighters = new List<Fighter>();
-            fighters.Add(new Fighter() {id = "3a5c704b-07a9-4fcb-81f5-756c9bf6e054", Name = "Grule", Picture="fig1.png" });
-            fighters.Add(new Fighter() { id = "8dd578f7-9c67-4228-ab5e-7e1d5d47d918", Name = "Malok", Picture = "fig2.png" });
-            fighters.Add(new Fighter() { id = "a34d680a-2892-4da2-803d-22022b5eac42", Name = "Sam", Picture = "fig3.png" });
-
-            return fighters;
+            using (IDbConnection dbConnection =
+                  DbProviderFactories.GetFactory("system.data.sqlclient").CreateConnection())
+            {
+                dbConnection.ConnectionString = "Server=tcp:cipherrex.database.windows.net,1433;Initial Catalog=cipherRexUmbraco;Persist Security Info=False;User ID=cipherrex;Password=R00ksp@wnR00ksp@wn;MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;";
+                dbConnection.Open();
+                Models.DAL.SqlDAL sqlDAL = new Models.DAL.SqlDAL(dbConnection);  
+                Models.Repositories.Fighter.IFighterRepository fighterRepository = new Models.Repositories.Fighter.FighterRepository(sqlDAL);
+                return fighterRepository.GetAll("cipherRex@gmail.com");
+            }
 
         }
 
